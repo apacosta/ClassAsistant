@@ -16,18 +16,25 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class SingleSignature extends AppCompatActivity {
+import adapters.ExamAdapter;
+import adapters.StudentHideableAdapter;
+import minimum.MinSignature;
+
+public class ActivitySignature extends AppCompatActivity {
 
     private List<MinSignature> data = new ArrayList<>();
-    private ViewAdapter view_adapter;
-    private RecyclerView recycler_view;
-    private TextView info;
+
+    private ExamAdapter exam_adapter;
+    private StudentHideableAdapter student_adapter;
+
+    private RecyclerView exam_recycler_view;
+    private TextView signature_information;
+
     private Intent exam_intent;
     private Intent student_intent;
 
-    ExpandableListView expandableListView;
-    StudentsAdapter expandableListAdapter;
-    List<String> expandableListTitle;
+    ExpandableListView student_list_view;
+    List<String> student_list_title;
     HashMap<String, List<String>> expandableListDetail;
 
     @Override
@@ -35,10 +42,16 @@ public class SingleSignature extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_single_signature);
 
+        // Set signature title
         this.setTitle("Single Signature");
 
+        // Set intents
         exam_intent = new Intent(this, SingleExam.class);
         student_intent = new Intent(this, StudentInfo.class);
+
+        // Gather information from database of students and exams
+
+        // Fill list with gathered information
         list_demo();
         expand_demo();
     }
@@ -56,8 +69,7 @@ public class SingleSignature extends AppCompatActivity {
         };
 
         for(String e: names) {
-            MinSignature f = new MinSignature();
-            f.setTitle(e);
+            MinSignature f = new MinSignature(e);
             data.add(f);
         }
 

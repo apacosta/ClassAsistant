@@ -15,12 +15,20 @@ import android.view.MenuItem;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Signatures extends AppCompatActivity {
+import adapters.SignatureAdapter;
+import io.Connector;
+import io.SQLCommandGenerator;
+import minimum.MinSignature;
 
-    private List<MinSignature> data = new ArrayList<>();
-    private ViewAdapter view_adapter;
+public class ActivitySignatures extends AppCompatActivity {
+
+    private List<MinSignature> signatures_data = new ArrayList<>();
+
+    private SignatureAdapter view_adapter;
     private RecyclerView recycler_view;
-    private Intent single_signature_intent;
+
+    private Intent signature_intent;
+    private Intent rubric_intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,8 +37,16 @@ public class Signatures extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        single_signature_intent = new Intent(this, SingleSignature.class);
-        list_demo();
+        // Set intents for Signature and Rubric
+        this.signature_intent = new Intent(this, ActivitySignature.class);
+        this.rubric_intent = new Intent(this, ActivityRubric.class);
+
+        // Initialize Signature List with the content of the database
+        Connector cc = new Connector();
+        this.signatures_data = MinSignature.dbParse(cc.getContent(SQLCommandGenerator.signaturesAll()));
+
+        // Fill RecycleView with found data
+        this.fillSignatureList();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -42,25 +58,8 @@ public class Signatures extends AppCompatActivity {
         });
     }
 
-    private void list_demo() {
-        String[] names = {
-                "FÍSICA CUÁNTICA", "PDI", "CONTROL",
-                "ALGORITMOS Y COMPLEJIDAD", "CULTURA ORIENTAL", "KARATE DO",
-                "INTELIGENCIA ARTIFICIAL", "ESTRUCTURAS DISCRETAS",
-                "BASES DE DATOS", "ELECTRÓNICA I", "ELECTRÓNICA II",
-                "ELECTRÓNICA III", "REDES DE COMPUTADORES", "SISTEMAS OPERATIVOS",
-                "COMUNICACIONES", "FÍSICA ELECTRICIDAD", "MECÁNICA CLÁSICA",
-                "MECÁNICA DE FLUIDOS", "TERMODINÁMICA", "KUNG FU", "MEDIOS DE TRANSMISIÓN",
-                "ÓPTICA", "NEON GENESIS EVANGELION"
-        };
-
-        for(String e: names) {
-            MinSignature f = new MinSignature();
-            f.setTitle(e);
-            data.add(f);
-        }
-
-        view_adapter = new ViewAdapter(this, data, single_signature_intent);
+    private void fillSignatureList() {
+        view_adapter = new SignatureAdapter(this, signatures_data, signature_intent);
 
         recycler_view = (RecyclerView) this.findViewById(R.id.recycle);
         recycler_view.setAdapter(view_adapter);

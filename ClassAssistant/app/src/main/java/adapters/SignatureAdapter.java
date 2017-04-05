@@ -1,4 +1,4 @@
-package com.uninorte.classassistant;
+package adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,24 +6,27 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
+
+import com.uninorte.classassistant.R;
 
 import java.util.Collections;
 import java.util.List;
 
+import entities.Signature;
+import minimum.MinSignature;
+
 /**
- * Created by asmateus on 3/04/17.
+ * Created by asmateus on 5/04/17.
  */
 
-public class ViewAdapter extends RecyclerView.Adapter<ViewAdapter.MyHolder> {
-
+public class SignatureAdapter extends RecyclerView.Adapter<SignatureAdapter.MyHolder> {
     private LayoutInflater inflater;
     private List<MinSignature> data = Collections.emptyList();
     private Context master;
     private Intent i;
 
-    public ViewAdapter(Context context, List<MinSignature> data, Intent i) {
+    public SignatureAdapter(Context context, List<MinSignature> data, Intent i) {
         this.master = context;
         this.i = i;
         inflater = LayoutInflater.from(context);
@@ -40,7 +43,7 @@ public class ViewAdapter extends RecyclerView.Adapter<ViewAdapter.MyHolder> {
     @Override
     public void onBindViewHolder(MyHolder holder, int position) {
         MinSignature info = data.get(position);
-        holder.tv.setText(info.getTitle());
+        holder.signature_name.setText(info.getTitle());
     }
 
     @Override
@@ -49,13 +52,13 @@ public class ViewAdapter extends RecyclerView.Adapter<ViewAdapter.MyHolder> {
     }
 
     class MyHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private TextView tv;
+        private TextView signature_name;
 
         public MyHolder(View itemView) {
             super(itemView);
 
-            tv = (TextView) itemView.findViewById(R.id.sig_item);
-            tv.setOnClickListener(ViewOnClickListener);
+            signature_name = (TextView) itemView.findViewById(R.id.sig_item);
+            signature_name.setOnClickListener(ViewOnClickListener);
             itemView.setOnClickListener(this);
         }
 
