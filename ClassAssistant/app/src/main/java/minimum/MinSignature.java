@@ -9,18 +9,18 @@ import java.util.HashMap;
 
 public class MinSignature {
 
-    private String title = "";
+    private String name = "";
 
-    public MinSignature(String title) {
-        this.title = title;
+    public MinSignature(String name) {
+        this.name = name;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getTitle() {
-        return this.title;
+    public String getName() {
+        return this.name;
     }
 
     public static ArrayList<MinSignature> dbParse(ArrayList<HashMap> map) {

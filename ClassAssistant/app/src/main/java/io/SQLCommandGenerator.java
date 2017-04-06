@@ -8,4 +8,12 @@ public class SQLCommandGenerator {
     public static String signaturesAll() {
         return "";
     }
+
+    public static String studentsFromSignature(String signature) {
+        return "";
+    }
+
+    public static String evaluationFromSignature(String signature) {
+        return "";
+    }
 }

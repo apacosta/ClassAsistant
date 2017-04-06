@@ -43,7 +43,7 @@ public class SignatureAdapter extends RecyclerView.Adapter<SignatureAdapter.MyHo
     @Override
     public void onBindViewHolder(MyHolder holder, int position) {
         MinSignature info = data.get(position);
-        holder.signature_name.setText(info.getTitle());
+        holder.signature_name.setText(info.getName());
     }
 
     @Override

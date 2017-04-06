@@ -18,24 +18,30 @@ import java.util.List;
 
 import adapters.ExamAdapter;
 import adapters.StudentHideableAdapter;
+import io.Connector;
+import io.SQLCommandGenerator;
+import minimum.MinExam;
 import minimum.MinSignature;
+import minimum.MinStudent;
 
 public class ActivitySignature extends AppCompatActivity {
 
-    private List<MinSignature> data = new ArrayList<>();
+    private MinSignature sig_info;
 
     private ExamAdapter exam_adapter;
     private StudentHideableAdapter student_adapter;
 
     private RecyclerView exam_recycler_view;
-    private TextView signature_information;
+    private TextView signature_information_view;
 
     private Intent exam_intent;
     private Intent student_intent;
 
     ExpandableListView student_list_view;
-    List<String> student_list_title;
     HashMap<String, List<String>> expandableListDetail;
+
+    List<MinStudent> student_list;
+    List<MinExam> exam_list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +56,9 @@ public class ActivitySignature extends AppCompatActivity {
         student_intent = new Intent(this, StudentInfo.class);
 
         // Gather information from database of students and exams
+        String sig_name = this.getIntent().getStringExtra("SIG_NAME");
+        this.sig_info = new MinSignature(sig_name);
+        this.dbHarvest();
 
         // Fill list with gathered information
         list_demo();
@@ -63,34 +72,29 @@ public class ActivitySignature extends AppCompatActivity {
         return true;
     }
 
+    private void dbHarvest() {
+        Connector cc = new Connector();
+
+        // Get student info
+        String cmd = SQLCommandGenerator.studentsFromSignature(sig_info.getName());
+        this.student_list = MinStudent.dbParse(cc.getContent(cmd));
+
+        // Get evaluation info
+        cmd = SQLCommandGenerator.evaluationFromSignature(sig_info.getName());
+        this.exam_list = MinExam.dbParse(cc.getContent(cmd));
+
+    }
+
     private void list_demo() {
-        String[] names = {
-                "EXAMEN 1", "EXAMEN 2", "EXAMEN 3", "EXAMEN 4"
-        };
+        this.exam_adapter = new ExamAdapter(this, exam_list, exam_intent);
 
-        for(String e: names) {
-            MinSignature f = new MinSignature(e);
-            data.add(f);
-        }
-
-        view_adapter = new ViewAdapter(this, data, exam_intent);
-
-        recycler_view = (RecyclerView) this.findViewById(R.id.recycle);
-        recycler_view.setAdapter(view_adapter);
-        recycler_view.setLayoutManager(new LinearLayoutManager(this));
-
-        this.info = (TextView) this.findViewById(R.id.signatureInformation);
-        this.info.setEnabled(false);
-        this.info.setText("This is an information field.\n"
-                + "Number of students: 16\n"
-                + "Number of exams evaluated: 2\n"
-                + "Failed: 7\n"
-                + "Passed: 9\n"
-        );
+        this.exam_recycler_view = (RecyclerView) this.findViewById(R.id.recycle);
+        this.exam_recycler_view.setAdapter(this.exam_adapter);
+        this.exam_recycler_view.setLayoutManager(new LinearLayoutManager(this));
     }
 
     private void expand_demo() {
-        expandableListView = (ExpandableListView) findViewById(R.id.signatureStudents);
+        this.student_list_view = (ExpandableListView) findViewById(R.id.signatureStudents);
         expandableListDetail = StudentList.getData();
         expandableListTitle = new ArrayList<String>(expandableListDetail.keySet());
         expandableListAdapter = new StudentsAdapter(this, expandableListTitle, expandableListDetail);
