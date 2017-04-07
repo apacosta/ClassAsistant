@@ -11,6 +11,8 @@ import android.widget.TextView;
 import java.util.Collections;
 import java.util.List;
 
+import minimum.MinExam;
+
 /**
  * Created by asmateus on 3/04/17.
  */
@@ -38,9 +40,9 @@ public class StudentViewAdapter extends RecyclerView.Adapter<StudentViewAdapter.
     @Override
     public void onBindViewHolder(MyHolder holder, int position) {
         MinExam info = data.get(position);
-        holder.tv.setText(info.name);
-        holder.tv2.setText(info.result);
-        holder.tv3.setText(info.perc);
+        holder.tv.setText(info.getName());
+        //holder.tv2.setText(info.result);
+        //holder.tv3.setText(info.perc);
     }
 
     @Override

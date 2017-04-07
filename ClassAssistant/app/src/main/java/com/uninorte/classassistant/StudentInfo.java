@@ -9,6 +9,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import minimum.MinExam;
+
 public class StudentInfo extends AppCompatActivity {
 
     private List<MinExam> data = new ArrayList<>();
@@ -31,9 +33,9 @@ public class StudentInfo extends AppCompatActivity {
 
         for(String e: names) {
             MinExam f = new MinExam();
-            f.name = e;
-            f.perc = "25%";
-            f.result = "5.0";
+            f.setName(e);
+            //f.perc = "25%";
+            //f.result = "5.0";
             data.add(f);
         }
 
