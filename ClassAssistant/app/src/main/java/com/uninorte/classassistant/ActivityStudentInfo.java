@@ -9,12 +9,13 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import adapters.StudentAdapter;
 import minimum.MinExam;
 
-public class StudentInfo extends AppCompatActivity {
+public class ActivityStudentInfo extends AppCompatActivity {
 
     private List<MinExam> data = new ArrayList<>();
-    private StudentViewAdapter view_adapter;
+    private StudentAdapter view_adapter;
     private RecyclerView recycler_view;
     private TextView info;
 
@@ -39,7 +40,7 @@ public class StudentInfo extends AppCompatActivity {
             data.add(f);
         }
 
-        view_adapter = new StudentViewAdapter(this, data);
+        view_adapter = new StudentAdapter(this, data);
 
         recycler_view = (RecyclerView) this.findViewById(R.id.recycle);
         recycler_view.setAdapter(view_adapter);

@@ -10,9 +10,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -53,8 +51,8 @@ public class ActivitySignature extends AppCompatActivity {
         this.setTitle("Single Signature");
 
         // Set intents
-        exam_intent = new Intent(this, SingleExam.class);
-        student_intent = new Intent(this, StudentInfo.class);
+        exam_intent = new Intent(this, ActivityExam.class);
+        student_intent = new Intent(this, ActivityStudentInfo.class);
 
         // Gather information from database of students and exams
         String sig_name = this.getIntent().getStringExtra("SIG_NAME");

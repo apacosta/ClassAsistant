@@ -19,8 +19,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".ActivitySignature" />
-        <activity android:name=".SingleExam" />
-        <activity android:name=".StudentInfo" />
+        <activity android:name=".ActivityExam" />
+        <activity android:name=".ActivityStudentInfo" />
         <activity
             android:name=".ActivityRubric"
             android:label="@string/title_activity_rubric"

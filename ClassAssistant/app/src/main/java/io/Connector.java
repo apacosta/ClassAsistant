@@ -15,4 +15,8 @@ public class Connector {
     public ArrayList<HashMap> getContent(String command) {
         return new ArrayList<HashMap>();
     }
+
+    public boolean setContent(String command) {
+        return false;
+    }
 }
