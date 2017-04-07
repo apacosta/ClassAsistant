@@ -12,6 +12,7 @@ import android.widget.ExpandableListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -61,8 +62,8 @@ public class ActivitySignature extends AppCompatActivity {
         this.dbHarvest();
 
         // Fill list with gathered information
-        list_demo();
-        expand_demo();
+        loadExamInformation();
+        loadStudentInformation();
     }
 
     @Override
@@ -85,7 +86,7 @@ public class ActivitySignature extends AppCompatActivity {
 
     }
 
-    private void list_demo() {
+    private void loadExamInformation() {
         this.exam_adapter = new ExamAdapter(this, exam_list, exam_intent);
 
         this.exam_recycler_view = (RecyclerView) this.findViewById(R.id.recycle);
@@ -93,27 +94,33 @@ public class ActivitySignature extends AppCompatActivity {
         this.exam_recycler_view.setLayoutManager(new LinearLayoutManager(this));
     }
 
-    private void expand_demo() {
+    private void loadStudentInformation() {
         this.student_list_view = (ExpandableListView) findViewById(R.id.signatureStudents);
-        expandableListDetail = StudentList.getData();
-        expandableListTitle = new ArrayList<String>(expandableListDetail.keySet());
-        expandableListAdapter = new StudentsAdapter(this, expandableListTitle, expandableListDetail);
-        expandableListView.setAdapter(expandableListAdapter);
-        expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+        expandableListDetail = new HashMap<String, List<String>>();
+        ArrayList<String> stud_list = new ArrayList<>();
+        for(MinStudent e: this.student_list) {
+            stud_list.add(e.getName());
+        }
+        expandableListDetail.put("Students", stud_list);
+
+        ArrayList<String> expandableListTitle = new ArrayList<String>(expandableListDetail.keySet());
+        this.student_adapter = new StudentHideableAdapter(this, expandableListTitle, expandableListDetail);
+        this.student_list_view.setAdapter(this.student_adapter);
+        this.student_list_view.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
 
             @Override
             public void onGroupExpand(int groupPosition) {
             }
         });
 
-        expandableListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
+        this.student_list_view.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
 
             @Override
             public void onGroupCollapse(int groupPosition) {
             }
         });
 
-        expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+        this.student_list_view.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v,
                                         int groupPosition, int childPosition, long id) {
