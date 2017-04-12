@@ -10,9 +10,10 @@ import java.util.HashMap;
 public class MinSignature {
 
     private String name = "";
+    private final int id;
 
-    public MinSignature(String name) {
-        this.name = name;
+    public MinSignature(int id) {
+        this.id = id;
     }
 
     public void setName(String name) {
@@ -21,6 +22,10 @@ public class MinSignature {
 
     public String getName() {
         return this.name;
+    }
+
+    public int getID() {
+        return this.id;
     }
 
     public static ArrayList<MinSignature> dbParse(ArrayList<HashMap> map) {

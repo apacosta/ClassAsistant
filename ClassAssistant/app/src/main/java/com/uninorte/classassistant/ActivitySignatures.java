@@ -3,7 +3,6 @@ package com.uninorte.classassistant;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +16,7 @@ import java.util.List;
 
 import adapters.SignatureAdapter;
 import io.Connector;
+import io.DBRepresentation;
 import io.SQLCommandGenerator;
 import minimum.MinSignature;
 
@@ -30,6 +30,8 @@ public class ActivitySignatures extends AppCompatActivity {
     private Intent signature_intent;
     private Intent rubric_intent;
 
+    private final Connector cc = new Connector();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,8 +44,7 @@ public class ActivitySignatures extends AppCompatActivity {
         this.rubric_intent = new Intent(this, ActivityRubric.class);
 
         // Initialize Signature List with the content of the database
-        Connector cc = new Connector();
-        this.signatures_data = MinSignature.dbParse(cc.getContent(SQLCommandGenerator.signaturesAll()));
+        this.signatures_data = MinSignature.dbParse(cc.getContent(SQLCommandGenerator.getSignaturesAll()));
 
         // Fill RecycleView with found data
         this.fillSignatureList();
@@ -52,8 +53,17 @@ public class ActivitySignatures extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Create a new signature in database
-                // ...
+                // Create a new empty signature
+                MinSignature s = new MinSignature(cc.getAvailableID(DBRepresentation.TYPE_SIGNATURE));
+                s.setName(getString(R.string.new_signature));
+
+                signatures_data.add(s);
+
+                // Push signature to database
+                cc.setContent(SQLCommandGenerator.setNewSignature(s));
+
+                // Display new data
+                fillSignatureList();
             }
         });
     }

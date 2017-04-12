@@ -1,5 +1,7 @@
 <resources>
-    <string name="app_name">ClassAssistant</string>
+    <string name="app_name">Asignaturas</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_rubric">ActivityRubric</string>
+
+    <string name="new_signature">NUEVA ASIGNATURA</string>
 </resources>

@@ -8,6 +8,7 @@ import java.util.HashMap;
  */
 
 public class Connector {
+
     public Connector() {
 
     }
@@ -18,5 +19,9 @@ public class Connector {
 
     public boolean setContent(String command) {
         return false;
+    }
+
+    public int getAvailableID(int id_type) {
+        return 0;
     }
 }

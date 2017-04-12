@@ -56,7 +56,7 @@ public class ActivitySignature extends AppCompatActivity {
 
         // Gather information from database of students and exams
         String sig_name = this.getIntent().getStringExtra("SIG_NAME");
-        this.sig_info = new MinSignature(sig_name);
+        this.sig_info = new MinSignature(1);
         this.dbHarvest();
 
         // Fill list with gathered information
@@ -75,11 +75,11 @@ public class ActivitySignature extends AppCompatActivity {
         Connector cc = new Connector();
 
         // Get student info
-        String cmd = SQLCommandGenerator.studentsFromSignature(sig_info.getName());
+        String cmd = SQLCommandGenerator.getStudentsFromSignature(sig_info.getID());
         this.student_list = MinStudent.dbParse(cc.getContent(cmd));
 
         // Get evaluation info
-        cmd = SQLCommandGenerator.evaluationFromSignature(sig_info.getName());
+        cmd = SQLCommandGenerator.getEvaluationFromSignature(sig_info.getID());
         this.exam_list = MinExam.dbParse(cc.getContent(cmd));
 
     }
