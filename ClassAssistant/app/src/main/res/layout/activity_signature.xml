@@ -20,20 +20,26 @@
         android:layout_alignParentEnd="true">
 
         <EditText
-            android:layout_width="match_parent"
-            android:layout_height="112dp"
-            android:inputType="textMultiLine"
-            android:ems="10"
             android:id="@+id/signatureInformation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textMultiLine"
+            android:text="NO REPORTS YET"
             android:textAppearance="@style/TextAppearance.AppCompat" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Evaluations"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+            android:textColor="@color/colorPrimaryDark" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycle"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            >
-        </android.support.v7.widget.RecyclerView>
+            android:layout_height="172dp"></android.support.v7.widget.RecyclerView>
 
         <ExpandableListView
             android:id="@+id/signatureStudents"

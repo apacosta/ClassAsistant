@@ -1,13 +1,16 @@
 package minimum;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import entities.Signature;
 
 /**
  * Created by asmateus on 5/04/17.
  */
 
-public class MinSignature {
+public class MinSignature implements Serializable {
 
     private String name = "";
     private final int id;
@@ -30,6 +33,10 @@ public class MinSignature {
 
     public static ArrayList<MinSignature> dbParse(ArrayList<HashMap> map) {
         return new ArrayList<>();
+    }
+
+    public static MinSignature reduceIntoMinSignature(Signature signature) {
+        return new MinSignature(1);
     }
 
 }

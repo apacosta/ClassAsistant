@@ -4,4 +4,5 @@
     <string name="title_activity_rubric">ActivityRubric</string>
 
     <string name="new_signature">NUEVA ASIGNATURA</string>
+    <string name="sig_token">Selected_Signature</string>
 </resources>

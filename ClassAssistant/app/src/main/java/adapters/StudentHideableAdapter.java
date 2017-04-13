@@ -2,6 +2,7 @@ package adapters;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.v4.widget.TextViewCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -87,7 +88,7 @@ public class StudentHideableAdapter extends BaseExpandableListAdapter {
         }
         TextView listTitleTextView = (TextView) convertView
                 .findViewById(R.id.listTitle);
-        listTitleTextView.setTypeface(null, Typeface.BOLD);
+        TextViewCompat.setTextAppearance(listTitleTextView, R.style.boldText);
         listTitleTextView.setText(listTitle);
         return convertView;
     }
