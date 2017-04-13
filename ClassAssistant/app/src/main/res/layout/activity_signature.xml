@@ -26,7 +26,8 @@
             android:ems="10"
             android:inputType="textMultiLine"
             android:text="NO REPORTS YET"
-            android:textAppearance="@style/TextAppearance.AppCompat" />
+            android:textAppearance="@style/TextAppearance.AppCompat"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/textView"
@@ -34,7 +35,8 @@
             android:layout_height="wrap_content"
             android:text="Evaluations"
             android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-            android:textColor="@color/colorPrimaryDark" />
+            android:textColor="@color/colorPrimaryDark"
+            tools:ignore="HardcodedText" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycle"
@@ -44,7 +46,7 @@
         <ExpandableListView
             android:id="@+id/signatureStudents"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             android:indicatorLeft="?android:attr/expandableListPreferredItemIndicatorLeft"
             android:divider="@android:color/darker_gray"
             android:dividerHeight="0.5dp"

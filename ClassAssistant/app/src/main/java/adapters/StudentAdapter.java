@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.List;
 
 import minimum.MinExam;
+import minimum.MinStudent;
 
 /**
  * Created by asmateus on 5/04/17.
@@ -24,7 +25,6 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.MyHolder
     private LayoutInflater inflater;
     private List<MinExam> data = Collections.emptyList();
     private Context master;
-    private Intent i;
 
     public StudentAdapter(Context context, List<MinExam> data) {
         this.master = context;

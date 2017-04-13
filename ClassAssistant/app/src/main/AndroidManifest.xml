@@ -20,7 +20,7 @@
         </activity>
         <activity android:name=".ActivitySignature" />
         <activity android:name=".ActivityExam" />
-        <activity android:name=".ActivityStudentInfo" />
+        <activity android:name=".ActivityStudent" />
         <activity
             android:name=".ActivityRubric"
             android:label="@string/title_activity_rubric"

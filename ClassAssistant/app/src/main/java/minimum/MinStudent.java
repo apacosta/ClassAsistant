@@ -1,5 +1,6 @@
 package minimum;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -7,7 +8,7 @@ import java.util.HashMap;
  * Created by asmateus on 5/04/17.
  */
 
-public class MinStudent {
+public class MinStudent implements Serializable {
 
     private String name = "";
 

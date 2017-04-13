@@ -12,7 +12,7 @@ import java.util.List;
 import adapters.StudentAdapter;
 import minimum.MinExam;
 
-public class ActivityStudentInfo extends AppCompatActivity {
+public class ActivityStudent extends AppCompatActivity {
 
     private List<MinExam> data = new ArrayList<>();
     private StudentAdapter view_adapter;

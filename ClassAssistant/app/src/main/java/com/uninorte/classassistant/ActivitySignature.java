@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
@@ -54,7 +55,7 @@ public class ActivitySignature extends AppCompatActivity {
 
         // Set intents
         exam_intent = new Intent(this, ActivityExam.class);
-        student_intent = new Intent(this, ActivityStudentInfo.class);
+        student_intent = new Intent(this, ActivityStudent.class);
 
         // Receive signature information
         Serializable master_info = getIntent().getSerializableExtra(getString(R.string.sig_token));
@@ -150,6 +151,8 @@ public class ActivitySignature extends AppCompatActivity {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v,
                                         int groupPosition, int childPosition, long id) {
+                MinStudent s = signature.getStudents().get(childPosition);
+                student_intent.putExtra("Selected_student", s);
                 startActivity(student_intent);
                 return false;
             }
