@@ -71,7 +71,7 @@ public class ActivitySignature extends AppCompatActivity {
         // Try something
         MinExam e;
         for(int i = 0; i < 4; ++i) {
-            e = new MinExam();
+            e = new MinExam(i);
             e.setName("Evaluation " + Integer.toString(i+1));
             this.signature.addEvaluation(e);
         }

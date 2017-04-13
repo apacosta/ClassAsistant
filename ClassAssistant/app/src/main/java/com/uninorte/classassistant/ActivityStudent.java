@@ -22,7 +22,7 @@ public class ActivityStudent extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_student_info);
+        setContentView(R.layout.activity_student);
 
         list_demo();
     }
@@ -33,7 +33,7 @@ public class ActivityStudent extends AppCompatActivity {
         };
 
         for(String e: names) {
-            MinExam f = new MinExam();
+            MinExam f = new MinExam(1);
             f.setName(e);
             //f.perc = "25%";
             //f.result = "5.0";

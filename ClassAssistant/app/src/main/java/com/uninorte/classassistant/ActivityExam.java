@@ -2,6 +2,8 @@ package com.uninorte.classassistant;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 
 import java.io.Serializable;
 
@@ -15,7 +17,7 @@ public class ActivityExam extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_single_exam);
+        setContentView(R.layout.activity_exam);
 
         // Get Serializable from master
         Serializable data = getIntent().getSerializableExtra("Selected_exam");
@@ -23,5 +25,13 @@ public class ActivityExam extends AppCompatActivity {
 
         // Rename activity
         this.setTitle(exam.getName());
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_exam, menu);
+
+        return true;
     }
 }
