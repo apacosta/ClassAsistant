@@ -1,12 +1,14 @@
 package com.uninorte.classassistant;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,7 +32,7 @@ public class ActivitySignatures extends AppCompatActivity {
     private Intent signature_intent;
     private Intent rubric_intent;
 
-    private final Connector cc = new Connector();
+    private Connector cc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +40,8 @@ public class ActivitySignatures extends AppCompatActivity {
         setContentView(R.layout.activity_signatures);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        this.cc = new Connector(this);
 
         // Set intents for Signature and Rubric
         this.signature_intent = new Intent(this, ActivitySignature.class);
@@ -54,13 +58,16 @@ public class ActivitySignatures extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // Create a new empty signature
-                MinSignature s = new MinSignature(cc.getAvailableID(DBRepresentation.TYPE_SIGNATURE));
+                MinSignature s = new MinSignature(0);
                 s.setName(getString(R.string.new_signature));
 
-                signatures_data.add(s);
-
                 // Push signature to database
-                cc.setContent(SQLCommandGenerator.setNewSignature(s));
+                long id_back = cc.setContent(SQLCommandGenerator.setNewSignature(s));
+
+                // Refresh id
+                s = MinSignature.fromExternalID(id_back, s);
+
+                signatures_data.add(s);
 
                 // Display new data
                 fillSignatureList();

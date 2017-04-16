@@ -1,5 +1,7 @@
 package io;
 
+import android.content.ContentValues;
+
 import minimum.MinSignature;
 
 /**
@@ -8,18 +10,27 @@ import minimum.MinSignature;
 
 public class SQLCommandGenerator {
     public static String getSignaturesAll() {
+        String cmd = "";
+
+        cmd += "SELECT _ID, " + DBRepresentation.Signature.COLUMN_NAME
+                + " FROM " + DBRepresentation.Signature.TABLE_NAME;
+
+        return cmd;
+    }
+
+    public static String getStudentsFromSignature(long id_signature) {
         return "";
     }
 
-    public static String getStudentsFromSignature(int id_signature) {
+    public static String getEvaluationFromSignature(long id_signature) {
         return "";
     }
 
-    public static String getEvaluationFromSignature(int id_signature) {
-        return "";
-    }
+    public static ContentValues setNewSignature(MinSignature signature) {
+        ContentValues v = new ContentValues();
 
-    public static String setNewSignature(MinSignature signature) {
-        return "";
+        v.put(DBRepresentation.Signature.COLUMN_NAME, signature.getName());
+
+        return v;
     }
 }

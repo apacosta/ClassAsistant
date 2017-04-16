@@ -18,4 +18,16 @@
         android:title="Add Exam"
         app:showAsAction="always" />
 
+    <item
+        android:id="@+id/action_eliminar"
+        android:orderInCategory="100"
+        android:title="Eliminar"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_rename"
+        android:orderInCategory="100"
+        android:title="Cambiar nombre"
+        app:showAsAction="never" />
+
 </menu>

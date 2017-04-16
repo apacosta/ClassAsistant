@@ -66,7 +66,7 @@ public class ActivitySignature extends AppCompatActivity {
 
         // The MinSignature received was trimmed down to name and id, so Signature needs to be
         // refilled
-        this.dbHarvest();
+        //this.dbHarvest();
 
         // Try something
         MinExam e;
@@ -97,7 +97,7 @@ public class ActivitySignature extends AppCompatActivity {
     }
 
     private void dbHarvest() {
-        Connector cc = new Connector();
+        Connector cc = new Connector(this);
 
         // Get student info
         String cmd = SQLCommandGenerator.getStudentsFromSignature(signature.getID());

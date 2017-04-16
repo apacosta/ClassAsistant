@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
+import android.util.Log;
 
 
 /**
@@ -39,14 +40,13 @@ public class DBRepresentation extends SQLiteOpenHelper {
     public static final int TYPE_RUBRIC_TEMPLATE = 4;
     public static final int TYPE_CATEGORY = 5;
     public static final int TYPE_RUBRIC = 6;
+    public static final String DEFAULT_DB_NAME = "class_assistant";
 
     private static final int DATABASE_VERSION = 1;
-    private final String database;
     private int table_type = TYPE_NONE;
 
-    public DBRepresentation(Context context, String database) {
-        super(context, database, null, DATABASE_VERSION);
-        this.database = database;
+    public DBRepresentation(Context context) {
+        super(context, DEFAULT_DB_NAME, null, DATABASE_VERSION);
     }
 
     public void setTableType(int type) {
@@ -57,7 +57,8 @@ public class DBRepresentation extends SQLiteOpenHelper {
         return this.table_type;
     }
 
-    @Override
+
+   // @Override
     public void onCreate(SQLiteDatabase db) {
         String cmd = "CREATE TABLE ";
         String table_name = "";
@@ -118,6 +119,7 @@ public class DBRepresentation extends SQLiteOpenHelper {
                 return;
         }
         cmd += table_name + " (" + id + params + ")";
+
         db.execSQL(cmd);
     }
 
