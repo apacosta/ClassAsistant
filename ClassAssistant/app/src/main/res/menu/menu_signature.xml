@@ -6,6 +6,7 @@
     >
     <item
         android:id="@+id/action_student"
+        android:onClick="createStudent"
         android:orderInCategory="200"
         android:icon="@drawable/add_person"
         android:title="Add Student"
@@ -15,6 +16,7 @@
         android:id="@+id/action_exam"
         android:orderInCategory="200"
         android:icon="@drawable/add_exam"
+        android:onClick="createEvaluation"
         android:title="Add Exam"
         app:showAsAction="always" />
 

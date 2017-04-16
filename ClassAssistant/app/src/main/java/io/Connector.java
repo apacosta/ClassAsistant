@@ -18,29 +18,40 @@ public class Connector {
     private DBRepresentation manager;
     private SQLiteDatabase db;
 
-    public Connector(Context context) {
+    public Connector(Context context, int table_type) {
         this.manager = new DBRepresentation(context);
-        manager.setTableType(DBRepresentation.TYPE_SIGNATURE);
+        manager.setTableType(table_type);
         this.db = manager.getReadableDatabase();
     }
 
-    public ArrayList<HashMap> getContent(String command) {
+    public ArrayList<HashMap> getContent(SQLPacket pkg) {
 
         // Use raw query provided via SQLCommandGenerator
-        Cursor cc = this.db.rawQuery(command, new String[] {});
-        Log.d("Connector", command);
+        Cursor cc = this.db.rawQuery(pkg.cmd, new String[] {});
+        Log.d("Connector", pkg.cmd);
         // Parse data
         ArrayList<HashMap> data = new ArrayList<>();
         while(cc.moveToNext()) {
-            long id = cc.getLong(cc.getColumnIndexOrThrow(DBRepresentation.Signature._ID));
-            String name = cc.getString(cc.getColumnIndexOrThrow(DBRepresentation.Signature.COLUMN_NAME));
-
-            Log.d("Connector", ""+id);
-            Log.d("Connector", name);
 
             HashMap<String, String> h = new HashMap<>();
-            h.put(DBRepresentation.Signature._ID, ""+id);
-            h.put(DBRepresentation.Signature.COLUMN_NAME, name);
+            for(int i = 0; i < pkg.fields.size(); ++i) {
+                String d = "";
+                switch (pkg.types.get(i)) {
+                    case SQLPacket.TYPE_INT:
+                        d = Integer.toString(cc.getInt(cc.getColumnIndexOrThrow(pkg.fields.get(i))));
+                        break;
+                    case SQLPacket.TYPE_LONG:
+                        d = Long.toString(cc.getLong(cc.getColumnIndexOrThrow(pkg.fields.get(i))));
+                        break;
+                    case SQLPacket.TYPE_STRING:
+                        d = cc.getString(cc.getColumnIndexOrThrow(pkg.fields.get(i)));
+                        break;
+                }
+
+                h.put(pkg.fields.get(i), d);
+
+            }
+
             data.add(h);
         }
         cc.close();
@@ -48,9 +59,9 @@ public class Connector {
         return data;
     }
 
-    public long setContent(ContentValues v) {
+    public long setContent(ContentValues v, String table) {
         // Insert the new row, returning the primary key value of the new row
-        long id = db.insert(DBRepresentation.Signature.TABLE_NAME, null, v);
+        long id = db.insert(table, null, v);
         return id;
     }
 

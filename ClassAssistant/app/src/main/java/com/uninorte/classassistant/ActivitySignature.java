@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ExpandableListView;
@@ -22,7 +23,9 @@ import adapters.ExamAdapter;
 import adapters.StudentHideableAdapter;
 import entities.Signature;
 import io.Connector;
+import io.DBRepresentation;
 import io.SQLCommandGenerator;
+import io.SQLPacket;
 import minimum.MinExam;
 import minimum.MinSignature;
 import minimum.MinStudent;
@@ -66,22 +69,7 @@ public class ActivitySignature extends AppCompatActivity {
 
         // The MinSignature received was trimmed down to name and id, so Signature needs to be
         // refilled
-        //this.dbHarvest();
-
-        // Try something
-        MinExam e;
-        for(int i = 0; i < 4; ++i) {
-            e = new MinExam(i);
-            e.setName("Evaluation " + Integer.toString(i+1));
-            this.signature.addEvaluation(e);
-        }
-
-        MinStudent s;
-        for(int i = 0; i < 30; ++i) {
-            s = new MinStudent();
-            s.setName("Student " + Integer.toString(i+1));
-            this.signature.addStudent(s);
-        }
+        this.dbHarvest();
 
         // Fill list with gathered information
         loadExamInformation();
@@ -97,17 +85,19 @@ public class ActivitySignature extends AppCompatActivity {
     }
 
     private void dbHarvest() {
-        Connector cc = new Connector(this);
+        Connector cc = new Connector(this, DBRepresentation.TYPE_STUDENT);
 
         // Get student info
-        String cmd = SQLCommandGenerator.getStudentsFromSignature(signature.getID());
-        for(MinStudent s: MinStudent.dbParse(cc.getContent(cmd))) {
+        SQLPacket pkg = SQLCommandGenerator.getStudentsFromSignature(signature.getID());
+        for(MinStudent s: MinStudent.dbParse(cc.getContent(pkg))) {
             this.signature.addStudent(s);
         }
 
+        cc = new Connector(this, DBRepresentation.TYPE_EVALUATION);
+
         // Get evaluation info
-        cmd = SQLCommandGenerator.getEvaluationFromSignature(signature.getID());
-        for(MinExam e: MinExam.dbParse(cc.getContent(cmd))) {
+        pkg = SQLCommandGenerator.getEvaluationFromSignature(signature.getID());
+        for(MinExam e: MinExam.dbParse(cc.getContent(pkg))) {
             this.signature.addEvaluation(e);
         }
 
@@ -157,5 +147,31 @@ public class ActivitySignature extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    public void createStudent(MenuItem item) {
+        MinStudent s = new MinStudent(0);
+        s.setName("Nuevo estudiante");
+
+        Connector cc = new Connector(this, DBRepresentation.TYPE_STUDENT);
+        long id = cc.setContent(SQLCommandGenerator.setNewStudent(s), DBRepresentation.Student.TABLE_NAME);
+
+        s = MinStudent.fromExternalID(id, s);
+
+        this.signature.getStudents().add(s);
+        this.loadStudentInformation();
+    }
+
+    public void createEvaluation(MenuItem item) {
+        MinExam s = new MinExam(0);
+        s.setName("Nuevo examen");
+
+        Connector cc = new Connector(this, DBRepresentation.TYPE_EVALUATION);
+        long id = cc.setContent(SQLCommandGenerator.setNewEvaluation(s), DBRepresentation.Evaluation.TABLE_NAME);
+
+        s = MinExam.fromExternalID(id, s);
+
+        this.signature.getEvaluations().add(s);
+        this.loadExamInformation();
     }
 }

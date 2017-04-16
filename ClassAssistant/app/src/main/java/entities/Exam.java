@@ -9,7 +9,7 @@ import minimum.MinExam;
 public class Exam {
 
     private String name = "";
-    private int id;
+    private long id;
 
     private Exam() {}
 

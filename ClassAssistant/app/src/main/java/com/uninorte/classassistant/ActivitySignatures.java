@@ -41,7 +41,7 @@ public class ActivitySignatures extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        this.cc = new Connector(this);
+        this.cc = new Connector(this, DBRepresentation.TYPE_SIGNATURE);
 
         // Set intents for Signature and Rubric
         this.signature_intent = new Intent(this, ActivitySignature.class);
@@ -62,7 +62,7 @@ public class ActivitySignatures extends AppCompatActivity {
                 s.setName(getString(R.string.new_signature));
 
                 // Push signature to database
-                long id_back = cc.setContent(SQLCommandGenerator.setNewSignature(s));
+                long id_back = cc.setContent(SQLCommandGenerator.setNewSignature(s), DBRepresentation.Signature.TABLE_NAME);
 
                 // Refresh id
                 s = MinSignature.fromExternalID(id_back, s);

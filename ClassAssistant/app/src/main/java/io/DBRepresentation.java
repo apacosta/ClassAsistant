@@ -60,99 +60,122 @@ public class DBRepresentation extends SQLiteOpenHelper {
 
    // @Override
     public void onCreate(SQLiteDatabase db) {
-        String cmd = "CREATE TABLE ";
-        String table_name = "";
-        String id = "";
-        String params = "";
+        Integer[] tables = new Integer[] {
+                DBRepresentation.TYPE_CATEGORY,
+                DBRepresentation.TYPE_EVALUATION,
+                DBRepresentation.TYPE_REPORT,
+                DBRepresentation.TYPE_RUBRIC,
+                DBRepresentation.TYPE_RUBRIC_TEMPLATE,
+                DBRepresentation.TYPE_SIGNATURE,
+                DBRepresentation.TYPE_STUDENT
+        };
 
-        switch(this.table_type) {
-            case TYPE_STUDENT:
-                table_name = Student.TABLE_NAME;
-                id = Student._ID + " INTEGER PRIMARY KEY,";
-                params += Student.COLUMN_NAME + " TEXT,";
-                params += Student.COLUMN_CUSTOM_ID + " TEXT,";
-                params += Student.COLUMN_EVALUATIONS + " TEXT,";
-                params += Student.COLUMN_REPORTS + " TEXT,";
-                params += Student.COLUMN_SIGNATURES + " TEXT";
-                break;
-            case TYPE_SIGNATURE:
-                table_name = Signature.TABLE_NAME;
-                id = Signature._ID + " INTEGER PRIMARY KEY,";
-                params += Signature.COLUMN_NAME + " TEXT,";
-                params += Signature.COLUMN_EVALUATIONS + " TEXT,";
-                params += Signature.COLUMN_GLOBAL_RUBRIC + " TEXT,";
-                params += Signature.COLUMN_REPORTS + " TEXT,";
-                params += Signature.COLUMN_STUDENTS + " TEXT";
-                break;
-            case TYPE_EVALUATION:
-                table_name = Evaluation.TABLE_NAME;
-                id = Evaluation._ID + " INTEGER PRIMARY KEY,";
-                params += Evaluation.COLUMN_NAME + " TEXT,";
-                params += Evaluation.COLUMN_RESULTS_STUDENTS + " TEXT,";
-                params += Evaluation.COLUMN_RUBRIC + " TEXT";
-                break;
-            case TYPE_RUBRIC_TEMPLATE:
-                table_name = RubricTemplate.TABLE_NAME;
-                id = RubricTemplate._ID + " INTEGER PRIMARY KEY,";
-                params += RubricTemplate.COLUMN_NAME + " TEXT,";
-                params += RubricTemplate.COLUMN_CATEGORIES + " TEXT";
-                break;
-            case TYPE_REPORT:
-                table_name = Report.TABLE_NAME;
-                id = Report._ID + " INTEGER PRIMARY KEY,";
-                params += Report.COLUMN_CONTENT + " TEXT,";
-                params += Report.COLUMN_TARGET + " TEXT,";
-                params += Report.COLUMN_TYPE + " TEXT";
-                break;
-            case TYPE_RUBRIC:
-                table_name = Rubric.TABLE_NAME;
-                id = Rubric._ID + " INTEGER PRIMARY KEY,";
-                params += Rubric.COLUMN_TEMPLATE + " TEXT,";
-                params += Rubric.COLUMN_WEIGHTS + " TEXT";
-                break;
-            case TYPE_CATEGORY:
-                table_name = Categories.TABLE_NAME;
-                id = Categories._ID + " INTEGER PRIMARY KEY,";
-                params += Categories.COLUMN_ELEMENTS + " TEXT";
-                break;
-            default:
-                return;
+        for(Integer e: tables) {
+            String cmd = "CREATE TABLE ";
+            String table_name = "";
+            String id = "";
+            String params = "";
+
+            switch(e) {
+                case TYPE_STUDENT:
+                    table_name = Student.TABLE_NAME;
+                    id = Student._ID + " INTEGER PRIMARY KEY,";
+                    params += Student.COLUMN_NAME + " TEXT,";
+                    params += Student.COLUMN_CUSTOM_ID + " TEXT,";
+                    params += Student.COLUMN_EVALUATIONS + " TEXT,";
+                    params += Student.COLUMN_REPORTS + " TEXT,";
+                    params += Student.COLUMN_SIGNATURES + " TEXT";
+                    break;
+                case TYPE_SIGNATURE:
+                    table_name = Signature.TABLE_NAME;
+                    id = Signature._ID + " INTEGER PRIMARY KEY,";
+                    params += Signature.COLUMN_NAME + " TEXT,";
+                    params += Signature.COLUMN_EVALUATIONS + " TEXT,";
+                    params += Signature.COLUMN_GLOBAL_RUBRIC + " TEXT,";
+                    params += Signature.COLUMN_REPORTS + " TEXT,";
+                    params += Signature.COLUMN_STUDENTS + " TEXT";
+                    break;
+                case TYPE_EVALUATION:
+                    table_name = Evaluation.TABLE_NAME;
+                    id = Evaluation._ID + " INTEGER PRIMARY KEY,";
+                    params += Evaluation.COLUMN_NAME + " TEXT,";
+                    params += Evaluation.COLUMN_RESULTS_STUDENTS + " TEXT,";
+                    params += Evaluation.COLUMN_RUBRIC + " TEXT";
+                    break;
+                case TYPE_RUBRIC_TEMPLATE:
+                    table_name = RubricTemplate.TABLE_NAME;
+                    id = RubricTemplate._ID + " INTEGER PRIMARY KEY,";
+                    params += RubricTemplate.COLUMN_NAME + " TEXT,";
+                    params += RubricTemplate.COLUMN_CATEGORIES + " TEXT";
+                    break;
+                case TYPE_REPORT:
+                    table_name = Report.TABLE_NAME;
+                    id = Report._ID + " INTEGER PRIMARY KEY,";
+                    params += Report.COLUMN_CONTENT + " TEXT,";
+                    params += Report.COLUMN_TARGET + " TEXT,";
+                    params += Report.COLUMN_TYPE + " TEXT";
+                    break;
+                case TYPE_RUBRIC:
+                    table_name = Rubric.TABLE_NAME;
+                    id = Rubric._ID + " INTEGER PRIMARY KEY,";
+                    params += Rubric.COLUMN_TEMPLATE + " TEXT,";
+                    params += Rubric.COLUMN_WEIGHTS + " TEXT";
+                    break;
+                case TYPE_CATEGORY:
+                    table_name = Categories.TABLE_NAME;
+                    id = Categories._ID + " INTEGER PRIMARY KEY,";
+                    params += Categories.COLUMN_ELEMENTS + " TEXT";
+                    break;
+                default:
+                    return;
+            }
+            cmd += table_name + " (" + id + params + ")";
+
+            db.execSQL(cmd);
         }
-        cmd += table_name + " (" + id + params + ")";
-
-        db.execSQL(cmd);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        String cmd = "DROP TABLE IF EXISTS ";
-        switch(this.table_type) {
-            case TYPE_STUDENT:
-                cmd += Student.TABLE_NAME;
-                break;
-            case TYPE_SIGNATURE:
-                cmd += Signature.TABLE_NAME;
-                break;
-            case TYPE_EVALUATION:
-                cmd += Evaluation.TABLE_NAME;
-                break;
-            case TYPE_RUBRIC_TEMPLATE:
-                cmd += RubricTemplate.TABLE_NAME;
-                break;
-            case TYPE_REPORT:
-                cmd += Report.TABLE_NAME;
-                break;
-            case TYPE_RUBRIC:
-                cmd += Rubric.TABLE_NAME;
-                break;
-            case TYPE_CATEGORY:
-                cmd += Categories.TABLE_NAME;
-                break;
-            default:
-                return;
-        }
+        Integer[] tables = new Integer[] {
+                DBRepresentation.TYPE_CATEGORY,
+                DBRepresentation.TYPE_EVALUATION,
+                DBRepresentation.TYPE_REPORT,
+                DBRepresentation.TYPE_RUBRIC,
+                DBRepresentation.TYPE_RUBRIC_TEMPLATE,
+                DBRepresentation.TYPE_SIGNATURE,
+                DBRepresentation.TYPE_STUDENT
+        };
+        for(Integer e: tables) {
+            String cmd = "DROP TABLE IF EXISTS ";
+            switch(this.table_type) {
+                case TYPE_STUDENT:
+                    cmd += Student.TABLE_NAME;
+                    break;
+                case TYPE_SIGNATURE:
+                    cmd += Signature.TABLE_NAME;
+                    break;
+                case TYPE_EVALUATION:
+                    cmd += Evaluation.TABLE_NAME;
+                    break;
+                case TYPE_RUBRIC_TEMPLATE:
+                    cmd += RubricTemplate.TABLE_NAME;
+                    break;
+                case TYPE_REPORT:
+                    cmd += Report.TABLE_NAME;
+                    break;
+                case TYPE_RUBRIC:
+                    cmd += Rubric.TABLE_NAME;
+                    break;
+                case TYPE_CATEGORY:
+                    cmd += Categories.TABLE_NAME;
+                    break;
+                default:
+                    return;
+            }
 
-        db.execSQL(cmd);
+            db.execSQL(cmd);
+        }
         this.onCreate(db);
     }
 

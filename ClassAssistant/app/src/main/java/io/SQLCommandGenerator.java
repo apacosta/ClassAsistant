@@ -2,34 +2,84 @@ package io;
 
 import android.content.ContentValues;
 
+import minimum.MinExam;
 import minimum.MinSignature;
+import minimum.MinStudent;
 
 /**
  * Created by asmateus on 5/04/17.
  */
 
 public class SQLCommandGenerator {
-    public static String getSignaturesAll() {
-        String cmd = "";
+    public static SQLPacket getSignaturesAll() {
+        SQLPacket pkg = new SQLPacket();
 
-        cmd += "SELECT _ID, " + DBRepresentation.Signature.COLUMN_NAME
+        pkg.cmd += "SELECT _ID, " + DBRepresentation.Signature.COLUMN_NAME
                 + " FROM " + DBRepresentation.Signature.TABLE_NAME;
 
-        return cmd;
+        pkg.fields.add(DBRepresentation.Signature._ID);
+        pkg.fields.add(DBRepresentation.Signature.COLUMN_NAME);
+
+        pkg.types.add(SQLPacket.TYPE_LONG);
+        pkg.types.add(SQLPacket.TYPE_STRING);
+
+        return pkg;
     }
 
-    public static String getStudentsFromSignature(long id_signature) {
-        return "";
+    public static SQLPacket getStudentsFromSignature(long id_signature) {
+        SQLPacket pkg = new SQLPacket();
+
+        pkg.cmd += "SELECT " + DBRepresentation.Student.TABLE_NAME + "._ID,"
+                + DBRepresentation.Student.TABLE_NAME + "." + DBRepresentation.Student.COLUMN_NAME
+                + " FROM " + DBRepresentation.Student.TABLE_NAME + ", " + DBRepresentation.Signature.TABLE_NAME
+                + " WHERE " + DBRepresentation.Signature.TABLE_NAME + "._ID=" + id_signature;
+
+        pkg.fields.add(DBRepresentation.Student._ID);
+        pkg.fields.add(DBRepresentation.Student.COLUMN_NAME);
+
+        pkg.types.add(SQLPacket.TYPE_LONG);
+        pkg.types.add(SQLPacket.TYPE_STRING);
+
+        return pkg;
     }
 
-    public static String getEvaluationFromSignature(long id_signature) {
-        return "";
+    public static SQLPacket getEvaluationFromSignature(long id_signature) {
+        SQLPacket pkg = new SQLPacket();
+
+        pkg.cmd += "SELECT " + DBRepresentation.Evaluation.TABLE_NAME + "._ID,"
+                + DBRepresentation.Evaluation.TABLE_NAME + "." + DBRepresentation.Evaluation.COLUMN_NAME
+                + " FROM " + DBRepresentation.Signature.TABLE_NAME + ", " + DBRepresentation.Evaluation.TABLE_NAME
+                + " WHERE " + DBRepresentation.Signature.TABLE_NAME + "._ID=" + id_signature;
+
+        pkg.fields.add(DBRepresentation.Evaluation._ID);
+        pkg.fields.add(DBRepresentation.Evaluation.COLUMN_NAME);
+
+        pkg.types.add(SQLPacket.TYPE_LONG);
+        pkg.types.add(SQLPacket.TYPE_STRING);
+
+        return pkg;
     }
 
     public static ContentValues setNewSignature(MinSignature signature) {
         ContentValues v = new ContentValues();
 
         v.put(DBRepresentation.Signature.COLUMN_NAME, signature.getName());
+
+        return v;
+    }
+
+    public static ContentValues setNewStudent(MinStudent student) {
+        ContentValues v = new ContentValues();
+
+        v.put(DBRepresentation.Student.COLUMN_NAME, student.getName());
+
+        return v;
+    }
+
+    public static ContentValues setNewEvaluation(MinExam exam) {
+        ContentValues v = new ContentValues();
+
+        v.put(DBRepresentation.Evaluation.COLUMN_NAME, exam.getName());
 
         return v;
     }
