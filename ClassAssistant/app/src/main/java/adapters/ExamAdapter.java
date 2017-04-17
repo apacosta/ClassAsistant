@@ -24,11 +24,11 @@ public class ExamAdapter extends RecyclerView.Adapter<ExamAdapter.MyHolder> {
     private LayoutInflater inflater;
     private List<MinExam> data = Collections.emptyList();
     private Context master;
-    private Intent master_exam_intent;
+    private Intent i;
 
     public ExamAdapter(Context context, List<MinExam> data, Intent i) {
         this.master = context;
-        this.master_exam_intent = i;
+        this.i = i;
         inflater = LayoutInflater.from(context);
         this.data = data;
     }
@@ -71,9 +71,7 @@ public class ExamAdapter extends RecyclerView.Adapter<ExamAdapter.MyHolder> {
         private View.OnClickListener ViewOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MinExam e = data.get(getAdapterPosition());
-                master_exam_intent.putExtra("Selected_exam", e);
-                master.startActivity(master_exam_intent);
+                master.startActivity(i);
             }
         };
     }

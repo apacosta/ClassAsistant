@@ -17,7 +17,7 @@ import minimum.MinStudent;
 public final class Signature {
 
     private String name = "";
-    private long id;
+    private int id;
     private List<MinStudent> students = new ArrayList<>();
     private List<MinExam> evaluations = new ArrayList<>();
 
@@ -31,7 +31,7 @@ public final class Signature {
         return this.name;
     }
 
-    public long getID() {
+    public int getID() {
         return this.id;
     }
 

@@ -2,11 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.uninorte.classassistant.ActivitySignature"
+    tools:context="com.uninorte.classassistant.SingleSignatures"
     >
     <item
         android:id="@+id/action_student"
-        android:onClick="createStudent"
         android:orderInCategory="200"
         android:icon="@drawable/add_person"
         android:title="Add Student"
@@ -16,26 +15,7 @@
         android:id="@+id/action_exam"
         android:orderInCategory="200"
         android:icon="@drawable/add_exam"
-        android:onClick="createEvaluation"
         android:title="Add Exam"
         app:showAsAction="always" />
-
-    <item
-        android:id="@+id/action_rename"
-        android:orderInCategory="100"
-        android:title="Cambiar nombre"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/action_eliminar"
-        android:orderInCategory="100"
-        android:title="Eliminar"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/action_report"
-        android:orderInCategory="100"
-        android:title="Generar reporte"
-        app:showAsAction="never" />
 
 </menu>

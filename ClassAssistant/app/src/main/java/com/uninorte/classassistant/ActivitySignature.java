@@ -5,10 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ExpandableListView;
@@ -23,9 +21,7 @@ import adapters.ExamAdapter;
 import adapters.StudentHideableAdapter;
 import entities.Signature;
 import io.Connector;
-import io.DBRepresentation;
 import io.SQLCommandGenerator;
-import io.SQLPacket;
 import minimum.MinExam;
 import minimum.MinSignature;
 import minimum.MinStudent;
@@ -58,7 +54,7 @@ public class ActivitySignature extends AppCompatActivity {
 
         // Set intents
         exam_intent = new Intent(this, ActivityExam.class);
-        student_intent = new Intent(this, ActivityStudent.class);
+        student_intent = new Intent(this, ActivityStudentInfo.class);
 
         // Receive signature information
         Serializable master_info = getIntent().getSerializableExtra(getString(R.string.sig_token));
@@ -70,6 +66,21 @@ public class ActivitySignature extends AppCompatActivity {
         // The MinSignature received was trimmed down to name and id, so Signature needs to be
         // refilled
         this.dbHarvest();
+
+        // Try something
+        MinExam e;
+        for(int i = 0; i < 4; ++i) {
+            e = new MinExam();
+            e.setName("Evaluation " + Integer.toString(i+1));
+            this.signature.addEvaluation(e);
+        }
+
+        MinStudent s;
+        for(int i = 0; i < 30; ++i) {
+            s = new MinStudent();
+            s.setName("Student " + Integer.toString(i+1));
+            this.signature.addStudent(s);
+        }
 
         // Fill list with gathered information
         loadExamInformation();
@@ -85,19 +96,17 @@ public class ActivitySignature extends AppCompatActivity {
     }
 
     private void dbHarvest() {
-        Connector cc = new Connector(this, DBRepresentation.TYPE_STUDENT);
+        Connector cc = new Connector();
 
         // Get student info
-        SQLPacket pkg = SQLCommandGenerator.getStudentsFromSignature(signature.getID());
-        for(MinStudent s: MinStudent.dbParse(cc.getContent(pkg))) {
+        String cmd = SQLCommandGenerator.getStudentsFromSignature(signature.getID());
+        for(MinStudent s: MinStudent.dbParse(cc.getContent(cmd))) {
             this.signature.addStudent(s);
         }
 
-        cc = new Connector(this, DBRepresentation.TYPE_EVALUATION);
-
         // Get evaluation info
-        pkg = SQLCommandGenerator.getEvaluationFromSignature(signature.getID());
-        for(MinExam e: MinExam.dbParse(cc.getContent(pkg))) {
+        cmd = SQLCommandGenerator.getEvaluationFromSignature(signature.getID());
+        for(MinExam e: MinExam.dbParse(cc.getContent(cmd))) {
             this.signature.addEvaluation(e);
         }
 
@@ -141,37 +150,9 @@ public class ActivitySignature extends AppCompatActivity {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v,
                                         int groupPosition, int childPosition, long id) {
-                MinStudent s = signature.getStudents().get(childPosition);
-                student_intent.putExtra("Selected_student", s);
                 startActivity(student_intent);
                 return false;
             }
         });
-    }
-
-    public void createStudent(MenuItem item) {
-        MinStudent s = new MinStudent(0);
-        s.setName("Nuevo estudiante");
-
-        Connector cc = new Connector(this, DBRepresentation.TYPE_STUDENT);
-        long id = cc.setContent(SQLCommandGenerator.setNewStudent(s), DBRepresentation.Student.TABLE_NAME);
-
-        s = MinStudent.fromExternalID(id, s);
-
-        this.signature.getStudents().add(s);
-        this.loadStudentInformation();
-    }
-
-    public void createEvaluation(MenuItem item) {
-        MinExam s = new MinExam(0);
-        s.setName("Nuevo examen");
-
-        Connector cc = new Connector(this, DBRepresentation.TYPE_EVALUATION);
-        long id = cc.setContent(SQLCommandGenerator.setNewEvaluation(s), DBRepresentation.Evaluation.TABLE_NAME);
-
-        s = MinExam.fromExternalID(id, s);
-
-        this.signature.getEvaluations().add(s);
-        this.loadExamInformation();
     }
 }
