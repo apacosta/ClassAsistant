@@ -18,14 +18,13 @@ public class DBManagerCategories {
     private Context context;
 
     private SQLiteDatabase database;
-    private String DB;
 
     public DBManagerCategories (Context c) {
         context = c;
     }
 
-    public DBManagerCategories  open() throws SQLException {
-        dbHelper = new DBRepresentation(context,DB);
+    public DBManagerCategories open() throws SQLException {
+        dbHelper = new DBRepresentation(context);
         database = dbHelper.getWritableDatabase();
         return this;
     }

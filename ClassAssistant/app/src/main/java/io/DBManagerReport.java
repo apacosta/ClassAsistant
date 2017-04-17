@@ -18,14 +18,14 @@ public class DBManagerReport {
     private Context context;
 
     private SQLiteDatabase database;
-    private String DB;
+
 
     public DBManagerReport(Context c) {
         context = c;
     }
 
     public DBManagerReport open() throws SQLException {
-        dbHelper = new DBRepresentation(context,DB);
+        dbHelper = new DBRepresentation(context);
         database = dbHelper.getWritableDatabase();
         return this;
     }

@@ -2,30 +2,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.uninorte.classassistant.ActivitySignature"
-    >
+    tools:context="com.uninorte.classassistant.ActivityExam">
+
     <item
-        android:id="@+id/action_student"
-        android:onClick="createStudent"
+        android:id="@+id/action_report"
         android:orderInCategory="200"
-        android:icon="@drawable/add_person"
+        android:icon="@drawable/add_report"
         android:title="Add Student"
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/action_exam"
+        android:id="@+id/action_rubrica"
         android:orderInCategory="200"
-        android:icon="@drawable/add_exam"
-        android:onClick="createEvaluation"
+        android:icon="@drawable/rubrica"
         android:title="Add Exam"
         app:showAsAction="always" />
-
-    <item
-        android:id="@+id/action_rename"
-        android:orderInCategory="100"
-        android:onClick="renameThis"
-        android:title="Cambiar nombre"
-        app:showAsAction="never" />
 
     <item
         android:id="@+id/action_eliminar"
@@ -34,9 +25,9 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/action_report"
+        android:id="@+id/action_rename"
         android:orderInCategory="100"
-        android:title="Generar reporte"
+        android:title="Cambiar nombre"
         app:showAsAction="never" />
 
 </menu>

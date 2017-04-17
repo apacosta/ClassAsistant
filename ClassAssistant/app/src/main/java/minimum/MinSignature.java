@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import entities.Signature;
+import io.DBRepresentation;
 
 /**
  * Created by asmateus on 5/04/17.
@@ -13,9 +14,9 @@ import entities.Signature;
 public class MinSignature implements Serializable {
 
     private String name = "";
-    private final int id;
+    private final long id;
 
-    public MinSignature(int id) {
+    public MinSignature(long id) {
         this.id = id;
     }
 
@@ -27,16 +28,34 @@ public class MinSignature implements Serializable {
         return this.name;
     }
 
-    public int getID() {
+    public long getID() {
         return this.id;
     }
 
     public static ArrayList<MinSignature> dbParse(ArrayList<HashMap> map) {
-        return new ArrayList<>();
+        ArrayList<MinSignature> data = new ArrayList<>();
+        MinSignature s;
+        for(HashMap e: map) {
+            String id = (String) e.get(DBRepresentation.Signature._ID);
+
+            s = new MinSignature(Long.parseLong(id));
+            s.setName((String) e.get(DBRepresentation.Signature.COLUMN_NAME));
+            data.add(s);
+        }
+        return data;
     }
 
     public static MinSignature reduceIntoMinSignature(Signature signature) {
-        return new MinSignature(1);
+        MinSignature s = new MinSignature(signature.getID());
+        s.setName(signature.getName());
+        return s;
+    }
+
+    public static MinSignature fromExternalID(long id, MinSignature s) {
+        MinSignature ss = new MinSignature(id);
+        ss.setName(s.getName());
+
+        return ss;
     }
 
 }

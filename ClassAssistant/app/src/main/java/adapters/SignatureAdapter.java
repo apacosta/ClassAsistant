@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.uninorte.classassistant.R;
 
@@ -76,6 +77,7 @@ public class SignatureAdapter extends RecyclerView.Adapter<SignatureAdapter.MyHo
             @Override
             public void onClick(View v) {
                 MinSignature selected = data.get(getAdapterPosition());
+
                 master_signature_intent.putExtra(master.getString(R.string.sig_token), selected);
                 master.startActivity(master_signature_intent);
             }

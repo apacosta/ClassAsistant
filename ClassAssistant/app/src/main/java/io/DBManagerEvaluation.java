@@ -18,14 +18,14 @@ public class DBManagerEvaluation {
     private Context context;
 
     private SQLiteDatabase database;
-    private String DB;
+
 
     public DBManagerEvaluation(Context c) {
         context = c;
     }
 
     public DBManagerEvaluation open() throws SQLException {
-        dbHelper = new DBRepresentation(context,DB);
+        dbHelper = new DBRepresentation(context);
         database = dbHelper.getWritableDatabase();
         return this;
     }
@@ -34,9 +34,10 @@ public class DBManagerEvaluation {
         dbHelper.close();
     }
 
-    public void insert(String name, String rubric, String results) {
+    public void insert(String name,String id, String rubric, String results) {
         ContentValues contentValue = new ContentValues();
         contentValue.put(DBRepresentation.Evaluation.COLUMN_NAME,name);
+        contentValue.put(DBRepresentation.Evaluation.COLUMN_CUSTOM_ID,id);
         contentValue.put(DBRepresentation.Evaluation.COLUMN_RUBRIC,rubric);
         contentValue.put(DBRepresentation.Evaluation.COLUMN_RESULTS_STUDENTS,results);
 
@@ -45,7 +46,7 @@ public class DBManagerEvaluation {
     }
 
     public Cursor fetch() {
-        String[] columns = new String[] { DBRepresentation.Evaluation._ID, DBRepresentation.Evaluation.COLUMN_NAME, DBRepresentation.Evaluation.COLUMN_RUBRIC, DBRepresentation.Evaluation.COLUMN_RESULTS_STUDENTS };
+        String[] columns = new String[] { DBRepresentation.Evaluation._ID, DBRepresentation.Evaluation.COLUMN_NAME,DBRepresentation.Evaluation.COLUMN_CUSTOM_ID, DBRepresentation.Evaluation.COLUMN_RUBRIC, DBRepresentation.Evaluation.COLUMN_RESULTS_STUDENTS };
         Cursor cursor = database.query(DBRepresentation.Evaluation.TABLE_NAME, columns, null, null, null, null, null);
         if (cursor != null) {
             cursor.moveToFirst();
@@ -53,10 +54,11 @@ public class DBManagerEvaluation {
         return cursor;
     }
 
-    public int update(long _id, String name, String rubric, String results) {
+    public int update(long _id, String name,String id, String rubric, String results) {
         ContentValues contentValues = new ContentValues();
 
         contentValues.put(DBRepresentation.Evaluation.COLUMN_NAME,name);
+        contentValues.put(DBRepresentation.Evaluation.COLUMN_CUSTOM_ID,id);
         contentValues.put(DBRepresentation.Evaluation.COLUMN_RUBRIC,rubric);
         contentValues.put(DBRepresentation.Evaluation.COLUMN_RESULTS_STUDENTS,results);
 

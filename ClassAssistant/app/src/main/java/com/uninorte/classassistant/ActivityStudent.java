@@ -12,7 +12,7 @@ import java.util.List;
 import adapters.StudentAdapter;
 import minimum.MinExam;
 
-public class ActivityStudentInfo extends AppCompatActivity {
+public class ActivityStudent extends AppCompatActivity {
 
     private List<MinExam> data = new ArrayList<>();
     private StudentAdapter view_adapter;
@@ -22,7 +22,7 @@ public class ActivityStudentInfo extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_student_info);
+        setContentView(R.layout.activity_student);
 
         list_demo();
     }
@@ -33,7 +33,7 @@ public class ActivityStudentInfo extends AppCompatActivity {
         };
 
         for(String e: names) {
-            MinExam f = new MinExam();
+            MinExam f = new MinExam(1);
             f.setName(e);
             //f.perc = "25%";
             //f.result = "5.0";

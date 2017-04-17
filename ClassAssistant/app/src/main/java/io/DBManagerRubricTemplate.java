@@ -18,14 +18,14 @@ public class DBManagerRubricTemplate {
     private Context context;
 
     private SQLiteDatabase database;
-    private String DB;
+
 
     public DBManagerRubricTemplate(Context c) {
         context = c;
     }
 
     public DBManagerRubricTemplate open() throws SQLException {
-        dbHelper = new DBRepresentation(context,DB);
+        dbHelper = new DBRepresentation(context);
         database = dbHelper.getWritableDatabase();
         return this;
     }

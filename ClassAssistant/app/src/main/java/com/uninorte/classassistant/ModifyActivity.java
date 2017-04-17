@@ -1,10 +1,6 @@
 package com.uninorte.classassistant;
 
 
-/**
- * Created by anshy on 9/04/2017.
- */
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,12 +11,11 @@ import android.widget.EditText;
 
 import io.DBManagerSignature;
 
+public class ModifyActivity extends Activity implements OnClickListener {
 
-public class ActivityAddAsignature extends Activity implements OnClickListener {
-
-    private EditText nameText;
+    private EditText titleText;
     private Button updateBtn, deleteBtn;
-    private EditText idText;
+
 
     private long _id;
 
@@ -30,43 +25,51 @@ public class ActivityAddAsignature extends Activity implements OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setTitle("Add Asignature");
+        setTitle("Modificar Datos");
 
         setContentView(R.layout.activity_addasignature);
-        getIntent().getSerializableExtra("materia");
-        nameText = (EditText) findViewById(R.id.asignaturename);
 
-        updateBtn = (Button) findViewById(R.id.btn_update);
         dbManager = new DBManagerSignature(this);
         dbManager.open();
+
+        titleText = (EditText) findViewById(R.id.asignaturename);
+
+
+        updateBtn = (Button) findViewById(R.id.btn_update);
+
+
+        Intent intent = getIntent();
+        String id = intent.getStringExtra("id");
+        String name = intent.getStringExtra("title");
+
+
+        _id = Long.parseLong(id);
+
+        titleText.setText(name);
+
+
         updateBtn.setOnClickListener(this);
+        deleteBtn.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_update:
-                String name = nameText.getText().toString();
+                String title = titleText.getText().toString();
 
-                dbManager.insert(name,"","","","");
 
-                Intent main = new Intent(ActivityAddAsignature.this, ActivitySignatures.class)
-                        .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-                startActivity(main);
+                dbManager.update(_id, title,"","","","");
+                this.returnHome();
                 break;
-
-
 
 
         }
     }
 
-   public void returnHome() {
-        Intent home_intent = new Intent(getApplicationContext(), ActivitySignature.class)
+    public void returnHome() {
+        Intent home_intent = new Intent(getApplicationContext(), ActivitySignatures.class)
                 .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(home_intent);
     }
-
 }
-

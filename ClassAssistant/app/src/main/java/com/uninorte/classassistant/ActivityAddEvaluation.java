@@ -13,31 +13,33 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
+import io.DBManagerEvaluation;
 import io.DBManagerSignature;
+import minimum.MinSignature;
 
 
-public class ActivityAddAsignature extends Activity implements OnClickListener {
+public class ActivityAddEvaluation extends Activity implements OnClickListener {
 
     private EditText nameText;
     private Button updateBtn, deleteBtn;
     private EditText idText;
-
+    private MinSignature mins;
     private long _id;
 
-    private DBManagerSignature dbManager;
+    private DBManagerEvaluation dbManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setTitle("Add Asignature");
+        setTitle("Add Evaluation");
+        mins = (MinSignature) getIntent().getSerializableExtra("asignatura");
+        setContentView(R.layout.activity_addevaluation);
 
-        setContentView(R.layout.activity_addasignature);
-        getIntent().getSerializableExtra("materia");
-        nameText = (EditText) findViewById(R.id.asignaturename);
+        nameText = (EditText) findViewById(R.id.evaluationname);
 
-        updateBtn = (Button) findViewById(R.id.btn_update);
-        dbManager = new DBManagerSignature(this);
+        updateBtn = (Button) findViewById(R.id.btn_update2);
+        dbManager = new DBManagerEvaluation(this);
         dbManager.open();
         updateBtn.setOnClickListener(this);
     }
@@ -45,15 +47,12 @@ public class ActivityAddAsignature extends Activity implements OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_update:
+            case R.id.btn_update2:
                 String name = nameText.getText().toString();
 
-                dbManager.insert(name,"","","","");
-
-                Intent main = new Intent(ActivityAddAsignature.this, ActivitySignatures.class)
-                        .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-                startActivity(main);
+                dbManager.insert(name,""+mins.getID(),"","");
+                setResult(RESULT_OK, new Intent());
+                finish();
                 break;
 
 

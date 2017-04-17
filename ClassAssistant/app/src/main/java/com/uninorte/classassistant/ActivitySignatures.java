@@ -1,12 +1,14 @@
 package com.uninorte.classassistant;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,7 +33,8 @@ public class ActivitySignatures extends AppCompatActivity {
     private Intent rubric_intent;
     private Intent add_asignature;
 
-    private final Connector cc = new Connector();
+
+    private Connector cc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,10 +43,13 @@ public class ActivitySignatures extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        this.cc = new Connector(this, DBRepresentation.TYPE_SIGNATURE);
+
         // Set intents for Signature and Rubric
         this.signature_intent = new Intent(this, ActivitySignature.class);
         this.rubric_intent = new Intent(this, ActivityRubric.class);
         this.add_asignature = new Intent(this,ActivityAddAsignature.class);
+
         // Initialize Signature List with the content of the database
         this.signatures_data = MinSignature.dbParse(cc.getContent(SQLCommandGenerator.getSignaturesAll()));
 
@@ -54,18 +60,17 @@ public class ActivitySignatures extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 // Create a new empty signature
-                MinSignature s = new MinSignature(cc.getAvailableID(DBRepresentation.TYPE_SIGNATURE));
 
                 startActivity(add_asignature);
 
-                s.setName(getString(R.string.new_signature));
 
-                signatures_data.add(s);
 
                 // Push signature to database
-                cc.setContent(SQLCommandGenerator.setNewSignature(s));
+                //long id_back = cc.setContent(SQLCommandGenerator.setNewSignature(s), DBRepresentation.Signature.TABLE_NAME);
+
+                // Refresh id
+
 
                 // Display new data
                 fillSignatureList();
