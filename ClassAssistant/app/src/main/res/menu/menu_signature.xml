@@ -23,19 +23,21 @@
     <item
         android:id="@+id/action_rename"
         android:orderInCategory="100"
-        android:onClick="renameThis"
+        android:onClick="renameSignature"
         android:title="Cambiar nombre"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/action_eliminar"
         android:orderInCategory="100"
+        android:onClick="deleteSignature"
         android:title="Eliminar"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/action_report"
         android:orderInCategory="100"
+        android:onClick="reportSignature"
         android:title="Generar reporte"
         app:showAsAction="never" />
 

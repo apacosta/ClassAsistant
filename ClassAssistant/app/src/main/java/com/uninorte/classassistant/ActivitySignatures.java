@@ -1,14 +1,12 @@
 package com.uninorte.classassistant;
 
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import adapters.SignatureAdapter;
+import entities.Codes;
 import io.Connector;
 import io.DBRepresentation;
 import io.SQLCommandGenerator;
@@ -50,9 +49,6 @@ public class ActivitySignatures extends AppCompatActivity {
         this.rubric_intent = new Intent(this, ActivityRubric.class);
         this.add_asignature = new Intent(this,ActivityAddAsignature.class);
 
-        // Initialize Signature List with the content of the database
-        this.signatures_data = MinSignature.dbParse(cc.getContent(SQLCommandGenerator.getSignaturesAll()));
-
         // Fill RecycleView with found data
         this.fillSignatureList();
 
@@ -62,29 +58,28 @@ public class ActivitySignatures extends AppCompatActivity {
             public void onClick(View view) {
                 // Create a new empty signature
 
-                startActivity(add_asignature);
-
-
-
-                // Push signature to database
-                //long id_back = cc.setContent(SQLCommandGenerator.setNewSignature(s), DBRepresentation.Signature.TABLE_NAME);
-
-                // Refresh id
-
-
-                // Display new data
-                fillSignatureList();
+                startActivityForResult(add_asignature, Codes.REQ_ADD_SIGNATURE);
             }
         });
     }
 
     private void fillSignatureList() {
+        // Initialize Signature List with the content of the database
+        this.signatures_data = MinSignature.dbParse(cc.getContent(SQLCommandGenerator.getSignaturesAll()));
+
         view_adapter = new SignatureAdapter(this, signatures_data, signature_intent);
 
         recycler_view = (RecyclerView) this.findViewById(R.id.recycle);
         recycler_view.setAdapter(view_adapter);
         recycler_view.setLayoutManager(new LinearLayoutManager(this));
     }
+
+    @Override
+    public void onActivityResult(int req_code, int res_code, Intent data){
+
+        this.fillSignatureList();
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

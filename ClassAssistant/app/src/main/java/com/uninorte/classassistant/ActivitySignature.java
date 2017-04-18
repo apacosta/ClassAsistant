@@ -22,6 +22,7 @@ import java.util.List;
 
 import adapters.ExamAdapter;
 import adapters.StudentHideableAdapter;
+import entities.Codes;
 import entities.Signature;
 import io.Connector;
 import io.DBRepresentation;
@@ -124,7 +125,7 @@ public class ActivitySignature extends AppCompatActivity {
         for(MinStudent e: this.signature.getStudents()) {
             stud_list.add(e.getName());
         }
-        expandableListDetail.put("Students", stud_list);
+        expandableListDetail.put("Estudiantes", stud_list);
 
         ArrayList<String> expandableListTitle = new ArrayList<String>(expandableListDetail.keySet());
         this.student_adapter = new StudentHideableAdapter(this, expandableListTitle, expandableListDetail);
@@ -158,40 +159,14 @@ public class ActivitySignature extends AppCompatActivity {
     public void createStudent(MenuItem item) {
 
         add_student.putExtra("asignatura",MinSignature.reduceIntoMinSignature(this.signature));
-
-
-        startActivityForResult(add_student,1);
-
-
-       /* MinStudent s = new MinStudent(0);
-        s.setName("Nuevo estudiante");
-
-        Connector cc = new Connector(this, DBRepresentation.TYPE_STUDENT);
-        long id = cc.setContent(SQLCommandGenerator.setNewStudent(s), DBRepresentation.Student.TABLE_NAME);
-
-        s = MinStudent.fromExternalID(id, s);
-
-        this.signature.getStudents().add(s);
-        */
+        startActivityForResult(add_student, Codes.REQ_ADD_STUDENT);
     }
 
     public void createEvaluation(MenuItem item) {
 
         add_evaluation.putExtra("asignatura",MinSignature.reduceIntoMinSignature(this.signature));
+        startActivityForResult(add_evaluation, Codes.REQ_ADD_EVALUATION);
 
-
-        startActivityForResult(add_evaluation, 2);
-
-
-        /*MinExam s = new MinExam(0);
-        s.setName("Nuevo examen");
-
-        Connector cc = new Connector(this, DBRepresentation.TYPE_EVALUATION);
-        long id = cc.setContent(SQLCommandGenerator.setNewEvaluation(s), DBRepresentation.Evaluation.TABLE_NAME);
-
-        s = MinExam.fromExternalID(id, s);
-        this.signature.getEvaluations().add(s);
-        */
     }
 
     @Override
@@ -203,7 +178,13 @@ public class ActivitySignature extends AppCompatActivity {
         loadStudentInformation();
     }
 
-    public void renameThis(MenuItem item) {
+    public void renameSignature(MenuItem item) {
+    }
 
+    public void deleteSignature(MenuItem item) {
+
+    }
+
+    public void reportSignature(MenuItem item) {
     }
 }

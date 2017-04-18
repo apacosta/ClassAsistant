@@ -50,22 +50,10 @@ public class ActivityAddAsignature extends Activity implements OnClickListener {
 
                 dbManager.insert(name,"","","","");
 
-                Intent main = new Intent(ActivityAddAsignature.this, ActivitySignatures.class)
-                        .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-                startActivity(main);
+                setResult(1, new Intent());
+                finish();
                 break;
-
-
-
-
         }
-    }
-
-   public void returnHome() {
-        Intent home_intent = new Intent(getApplicationContext(), ActivitySignature.class)
-                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(home_intent);
     }
 
 }

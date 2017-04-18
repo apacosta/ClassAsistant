@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import java.io.Serializable;
 
@@ -33,5 +34,14 @@ public class ActivityExam extends AppCompatActivity {
         inflater.inflate(R.menu.menu_exam, menu);
 
         return true;
+    }
+
+    public void renameExam(MenuItem item) {
+    }
+
+    public void deleteExam(MenuItem item) {
+    }
+
+    public void reportExam(MenuItem item) {
     }
 }

@@ -10,12 +10,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.uninorte.classassistant.ActivitySignatures;
 import com.uninorte.classassistant.R;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import entities.Codes;
 import entities.Signature;
 import minimum.MinSignature;
 
@@ -26,13 +28,13 @@ import minimum.MinSignature;
 public class SignatureAdapter extends RecyclerView.Adapter<SignatureAdapter.MyHolder> {
     private LayoutInflater inflater;
     private List<MinSignature> data = Collections.emptyList();
-    private Context master;
+    private ActivitySignatures master;
     private Intent master_signature_intent;
 
-    public SignatureAdapter(Context context, List<MinSignature> data, Intent i) {
-        this.master = context;
+    public SignatureAdapter(ActivitySignatures act, List<MinSignature> data, Intent i) {
         this.master_signature_intent = i;
-        inflater = LayoutInflater.from(context);
+        this.master = act;
+        inflater = LayoutInflater.from(master);
         this.data = data;
     }
 
@@ -79,7 +81,7 @@ public class SignatureAdapter extends RecyclerView.Adapter<SignatureAdapter.MyHo
                 MinSignature selected = data.get(getAdapterPosition());
 
                 master_signature_intent.putExtra(master.getString(R.string.sig_token), selected);
-                master.startActivity(master_signature_intent);
+                master.startActivityForResult(master_signature_intent, Codes.REQ_EVALUATION);
             }
         };
     }
