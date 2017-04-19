@@ -48,9 +48,6 @@ public class DBManagerEvaluation {
     public Cursor fetch() {
         String[] columns = new String[] { DBRepresentation.Evaluation._ID, DBRepresentation.Evaluation.COLUMN_NAME,DBRepresentation.Evaluation.COLUMN_CUSTOM_ID, DBRepresentation.Evaluation.COLUMN_RUBRIC, DBRepresentation.Evaluation.COLUMN_RESULTS_STUDENTS };
         Cursor cursor = database.query(DBRepresentation.Evaluation.TABLE_NAME, columns, null, null, null, null, null);
-        if (cursor != null) {
-            cursor.moveToFirst();
-        }
         return cursor;
     }
 

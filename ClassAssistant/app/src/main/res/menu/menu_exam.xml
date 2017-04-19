@@ -9,6 +9,7 @@
         android:orderInCategory="200"
         android:icon="@drawable/rubrica"
         android:title="Add Exam"
+        android:onClick="addRubric"
         app:showAsAction="always" />
 
     <item

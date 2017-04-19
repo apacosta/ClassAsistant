@@ -48,9 +48,7 @@ public class DBManagerStudent {
     public Cursor fetch() {
         String[] columns = new String[] { DBRepresentation.Student._ID, DBRepresentation.Student.COLUMN_CUSTOM_ID, DBRepresentation.Student.COLUMN_NAME, DBRepresentation.Student.COLUMN_SIGNATURES, DBRepresentation.Student.COLUMN_EVALUATIONS, DBRepresentation.Student.COLUMN_REPORTS };
         Cursor cursor = database.query(DBRepresentation.Student.TABLE_NAME, columns, null, null, null, null, null);
-        if (cursor != null) {
-            cursor.moveToFirst();
-        }
+
         return cursor;
     }
 

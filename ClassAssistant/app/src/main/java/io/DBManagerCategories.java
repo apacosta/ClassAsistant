@@ -43,9 +43,6 @@ public class DBManagerCategories {
     public Cursor fetch() {
         String[] columns = new String[] { DBRepresentation.Categories._ID, DBRepresentation.Categories.COLUMN_ELEMENTS};
         Cursor cursor = database.query(DBRepresentation.Categories.TABLE_NAME, columns, null, null, null, null, null);
-        if (cursor != null) {
-            cursor.moveToFirst();
-        }
         return cursor;
     }
 

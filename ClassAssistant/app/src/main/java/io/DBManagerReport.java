@@ -47,9 +47,6 @@ public class DBManagerReport {
     public Cursor fetch() {
         String[] columns = new String[] { DBRepresentation.Report._ID, DBRepresentation.Report.COLUMN_TYPE, DBRepresentation.Report.COLUMN_TARGET, DBRepresentation.Report.COLUMN_CONTENT };
         Cursor cursor = database.query(DBRepresentation.Report.TABLE_NAME, columns, null, null, null, null, null);
-        if (cursor != null) {
-            cursor.moveToFirst();
-        }
         return cursor;
     }
 

@@ -10,54 +10,20 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.uninorte.classassistant.ActivityExam">
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/acumexam"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sumatoria de pesos: 0%"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textSize="25sp" />
+
+    <ListView
+        android:id="@+id/rubriclista"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_weight="1"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Nombre"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-                android:textSize="24sp" />
-
-            <EditText
-                android:id="@+id/exam_name_input"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:ems="10"
-                android:inputType="textPersonName"
-                android:text="Nueva asignatura" />
-
-        </LinearLayout>
-
-        <ExpandableListView
-            android:id="@+id/rubric_info"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.39" />
-
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="0.0%"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
-
-    </LinearLayout>
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/acumexam" />
 
 </RelativeLayout>

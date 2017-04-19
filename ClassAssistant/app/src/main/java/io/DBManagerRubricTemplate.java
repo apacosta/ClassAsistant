@@ -47,9 +47,7 @@ public class DBManagerRubricTemplate {
     public Cursor fetch() {
         String[] columns = new String[] { DBRepresentation.RubricTemplate._ID, DBRepresentation.RubricTemplate.COLUMN_NAME, DBRepresentation.RubricTemplate.COLUMN_CATEGORIES };
         Cursor cursor = database.query(DBRepresentation.RubricTemplate.TABLE_NAME, columns, null, null, null, null, null);
-        if (cursor != null) {
-            cursor.moveToFirst();
-        }
+
         return cursor;
     }
 

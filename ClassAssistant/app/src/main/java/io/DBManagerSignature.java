@@ -48,9 +48,7 @@ public class DBManagerSignature {
     public Cursor fetch() {
         String[] columns = new String[] { DBRepresentation.Signature._ID, DBRepresentation.Signature.COLUMN_NAME, DBRepresentation.Signature.COLUMN_EVALUATIONS, DBRepresentation.Signature.COLUMN_STUDENTS, DBRepresentation.Signature.COLUMN_REPORTS, DBRepresentation.Signature.COLUMN_GLOBAL_RUBRIC };
         Cursor cursor = database.query(DBRepresentation.Signature.TABLE_NAME, columns, null, null, null, null, null);
-        if (cursor != null) {
-            cursor.moveToFirst();
-        }
+
         return cursor;
     }
 

@@ -20,7 +20,7 @@ import minimum.MinSignature;
  */
 
 public class ActivityAddReport extends Activity implements View.OnClickListener {
-    private TextView nameText;
+    private EditText nameText;
     private Button updateBtn, deleteBtn;
     private EditText idText;
 
@@ -44,7 +44,7 @@ public class ActivityAddReport extends Activity implements View.OnClickListener 
 
         }
 
-        nameText = (TextView) findViewById(R.id.reportcontent);
+        nameText = (EditText) findViewById(R.id.reportcontent);
         dbManager = new DBManagerReport(this);
         dbManager.open();
         updateBtn = (Button) findViewById(R.id.btn_update);
@@ -56,7 +56,7 @@ public class ActivityAddReport extends Activity implements View.OnClickListener 
         }
         else {
             setTitle("Ver reporte");
-
+            nameText.setEnabled(false);
             String content = "";
             Cursor c = dbManager.fetch();
             while(c.moveToNext()) {
