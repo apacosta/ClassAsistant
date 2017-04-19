@@ -48,6 +48,7 @@ public class ActivitySignatures extends AppCompatActivity {
         this.signature_intent = new Intent(this, ActivitySignature.class);
         this.rubric_intent = new Intent(this, ActivityRubric.class);
         this.add_asignature = new Intent(this,ActivityAddAsignature.class);
+        this.add_asignature.putExtra("method", "create");
 
         // Fill RecycleView with found data
         this.fillSignatureList();

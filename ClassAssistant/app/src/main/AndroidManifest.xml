@@ -32,6 +32,11 @@
             android:name=".ActivityAddEvaluation"
 
             />
+
+        <activity android:theme="@android:style/Theme.DeviceDefault.Light.Dialog"
+            android:name=".ActivityAddReport"
+
+            />
         <activity android:name=".ActivitySignature" />
         <activity android:name=".ActivityExam" />
         <activity android:name=".ActivityStudent" />

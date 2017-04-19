@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import io.DBManagerSignature;
+import minimum.MinSignature;
 
 
 public class ActivityAddAsignature extends Activity implements OnClickListener {
@@ -25,15 +26,29 @@ public class ActivityAddAsignature extends Activity implements OnClickListener {
     private long _id;
 
     private DBManagerSignature dbManager;
+    private MinSignature min;
+    private String method = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setTitle("Add Asignature");
-
         setContentView(R.layout.activity_addasignature);
-        getIntent().getSerializableExtra("materia");
+
+        try{
+            this.min = (MinSignature) getIntent().getSerializableExtra("materia");
+            this.method = getIntent().getStringExtra("method");
+        }
+        catch(Exception e) {
+
+        }
+        if(method.equals("create")) {
+            setTitle("Nueva asignatura");
+        }
+        else {
+            setTitle("Cambiar nombre");
+        }
+
         nameText = (EditText) findViewById(R.id.asignaturename);
 
         updateBtn = (Button) findViewById(R.id.btn_update);
@@ -47,8 +62,15 @@ public class ActivityAddAsignature extends Activity implements OnClickListener {
         switch (v.getId()) {
             case R.id.btn_update:
                 String name = nameText.getText().toString();
+                if(method != null) {
+                    if(method.equals("create")) {
+                        dbManager.insert(name,"","","","");
+                    }
+                    else {
+                        dbManager.update(min.getID(), name, "", "", "", "");
+                    }
+                }
 
-                dbManager.insert(name,"","","","");
 
                 setResult(1, new Intent());
                 finish();

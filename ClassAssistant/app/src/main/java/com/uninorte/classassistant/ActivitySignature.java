@@ -25,6 +25,7 @@ import adapters.StudentHideableAdapter;
 import entities.Codes;
 import entities.Signature;
 import io.Connector;
+import io.DBManagerSignature;
 import io.DBRepresentation;
 import io.SQLCommandGenerator;
 import io.SQLPacket;
@@ -47,6 +48,9 @@ public class ActivitySignature extends AppCompatActivity {
     private Intent add_student;
     private Intent add_evaluation;
 
+    private Intent rename_intent;
+    private Intent report_intent;
+
     ExpandableListView student_list_view;
     HashMap<String, List<String>> expandableListDetail;
 
@@ -57,7 +61,6 @@ public class ActivitySignature extends AppCompatActivity {
 
         // Information field is not user enabled
         this.signature_information_view = (TextView) findViewById(R.id.signatureInformation);
-        this.signature_information_view.setEnabled(false);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         // Set intents
@@ -66,9 +69,14 @@ public class ActivitySignature extends AppCompatActivity {
         add_student = new Intent(this,ActivityAddStudent.class);
         add_evaluation = new Intent(this,ActivityAddEvaluation.class);
 
+        rename_intent = new Intent(this, ActivityAddAsignature.class);
+        rename_intent.putExtra("method", "update");
+        report_intent = new Intent(this, ActivityAddReport.class);
+
         // Receive signature information
         Serializable master_info = getIntent().getSerializableExtra(getString(R.string.sig_token));
         this.signature = Signature.expandIntoSignature((MinSignature) master_info);
+        rename_intent.putExtra("materia", master_info);
 
         // Set signature title
         this.setTitle(this.signature.getName());
@@ -171,20 +179,41 @@ public class ActivitySignature extends AppCompatActivity {
 
     @Override
     public void onActivityResult(int req_code, int res_code, Intent data){
-        this.dbHarvest();
+        if(req_code == Codes.REQ_EVALUATION) {
+            setResult(1, new Intent());
+            finish();
+        }
+        else if(req_code == Codes.EDT_REPORT) {}
+        else {
+            this.dbHarvest();
 
-        // Fill list with gathered information
-        loadExamInformation();
-        loadStudentInformation();
+            // Fill list with gathered information
+            loadExamInformation();
+            loadStudentInformation();
+        }
     }
 
     public void renameSignature(MenuItem item) {
+        startActivityForResult(this.rename_intent, Codes.REQ_EVALUATION);
     }
 
     public void deleteSignature(MenuItem item) {
-
+        DBManagerSignature manager = new DBManagerSignature(this);
+        manager.open();
+        manager.delete(this.signature.getID());
+        manager.close();
+        onActivityResult(Codes.REQ_EVALUATION, 1, new Intent());
     }
 
     public void reportSignature(MenuItem item) {
+        report_intent.putExtra("method", "edit");
+        report_intent.putExtra("materia", MinSignature.reduceIntoMinSignature(this.signature));
+        startActivityForResult(report_intent, Codes.EDT_REPORT);
+    }
+
+    public void seeReports(View view) {
+        report_intent.putExtra("method", "view");
+        report_intent.putExtra("materia", MinSignature.reduceIntoMinSignature(this.signature));
+        startActivityForResult(report_intent, Codes.EDT_REPORT);
     }
 }
