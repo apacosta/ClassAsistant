@@ -18,32 +18,25 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:theme="@android:style/Theme.DeviceDefault.Light.Dialog"
+        <activity
             android:name=".ActivityAddAsignature"
-
-            />
-        <activity android:theme="@android:style/Theme.DeviceDefault.Light.Dialog"
+            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
+        <activity
             android:name=".ActivityAddStudent"
-
-            />
-
-        <activity android:theme="@android:style/Theme.DeviceDefault.Light.Dialog"
+            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
+        <activity
             android:name=".ActivityAddEvaluation"
-
-            />
-
-        <activity android:theme="@android:style/Theme.DeviceDefault.Light.Dialog"
+            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
+        <activity
             android:name=".ActivityAddReport"
-
-            />
+            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
         <activity android:name=".ActivitySignature" />
         <activity android:name=".ActivityExam" />
         <activity android:name=".ActivityStudent" />
         <activity
             android:name=".ActivityRubric"
-            android:label="@string/title_activity_rubric"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:label="@string/title_activity_rubric" />
+        <activity android:name=".LoginActivity" android:theme="@style/AppTheme.Dark"></activity>
     </application>
 
 </manifest>
