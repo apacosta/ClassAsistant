@@ -36,7 +36,6 @@ public class InformationTracker {
     public InformationTracker(int tracker_id, FirebaseDatabase db, String deep_offset) {
         this.tracker_id = tracker_id;
         String db_path = getTrackerTypeString(tracker_id, deep_offset);
-        Log.d("TransactionOutput", db_path);
         this.ref = db.getReference(db_path);
 
         // Attach a listener to read the data at our posts reference

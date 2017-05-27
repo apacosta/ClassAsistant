@@ -5,4 +5,10 @@
 
     <string name="new_signature">NUEVA ASIGNATURA</string>
     <string name="sig_token">Selected_Signature</string>
+    <string name="title_activity_teacher_view">TeacherView</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="software_name_version">Class Assistant. V. 2.37. Rev 3.</string>
+    <string name="logout">Logout</string>
 </resources>
