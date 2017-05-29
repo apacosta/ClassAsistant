@@ -28,6 +28,8 @@ public class InformationTracker {
     public static final int TEACHERS_TRACKER = 8;
     public static final int TEACHERS_TRACKER_DEEP = 9;
     public static final int STUDENTS_SCORE_TRACKER = 10;
+    public static final int RUBRIC_TRACKER = 11;
+    public static final int RUBRIC_TRACKER_DEEP = 12;
 
 
     private ArrayList<TransactionListeners> listeners = new ArrayList<>();
@@ -143,6 +145,19 @@ public class InformationTracker {
                     }
                 }
                 return o;
+            case RUBRIC_TRACKER:
+                StandardTransactionOutput rub_o = new StandardTransactionOutput();
+                rub_o.setResultType(RUBRIC_TRACKER);
+
+                for(DataSnapshot d: snap.getChildren()) {
+                    for(DataSnapshot de: d.getChildren()) {
+                        if(de.getKey().equals("name"))
+                            rub_o.getContent().put(d.getKey(), de.getValue().toString());
+                    }
+                }
+                return rub_o;
+            case RUBRIC_TRACKER_DEEP:
+                break;
         }
 
         if(rep != null) {
@@ -185,6 +200,11 @@ public class InformationTracker {
             case STUDENTS_SCORE_TRACKER:
                 type = "eval-results";
                 special_info = deepness;
+                break;
+            case RUBRIC_TRACKER:
+                type = "rubrics/" + deepness;
+                break;
+            case RUBRIC_TRACKER_DEEP:
                 break;
         }
 

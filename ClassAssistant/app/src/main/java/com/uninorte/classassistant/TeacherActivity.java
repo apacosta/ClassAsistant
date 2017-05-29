@@ -49,6 +49,10 @@ public class TeacherActivity extends AppCompatActivity
     private TextView navbar_user_name;
     private TextView navbar_email;
 
+    // Rubric list variables
+    private Menu rubrics_menu_list;
+    private ArrayList<String> rubrics_ids = new ArrayList<>();
+
     // Floating button variables
     private String signature_on_creation_name = "";
 
@@ -88,6 +92,11 @@ public class TeacherActivity extends AppCompatActivity
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+
+        // Get navigation drawer menu and add onClick listener
+        Menu menu = navigationView.getMenu();
+        rubrics_menu_list = menu.addSubMenu("Rubrics");
+
         View header_view = navigationView.getHeaderView(0);
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -151,6 +160,13 @@ public class TeacherActivity extends AppCompatActivity
         recycler_view.setLayoutManager(new LinearLayoutManager(this));
     }
 
+    private void fillRubricList(HashMap<String, String> hs) {
+        for(String k: hs.keySet()) {
+            rubrics_ids.add(k);
+            rubrics_menu_list.add(hs.get(k));
+        }
+    }
+
     private void requestSignaturesInfo(String[] sig_ids) {
         this.signatures_data = new ArrayList<>();
         for(String s: sig_ids) {
@@ -158,6 +174,12 @@ public class TeacherActivity extends AppCompatActivity
             tracker.addListener(this);
             this.trackers.add(tracker);
         }
+    }
+
+    private void requestRubricInfo() {
+        InformationTracker tracker = new InformationTracker(InformationTracker.RUBRIC_TRACKER, database, username);
+        tracker.addListener(this);
+        this.trackers.add(tracker);
     }
 
     private void requestGeneralScoreData(String id, String students) {
@@ -283,6 +305,7 @@ public class TeacherActivity extends AppCompatActivity
 
                         String[] courses_ids = this.courses_id_stamps.split(";");
                         requestSignaturesInfo(courses_ids);
+                        requestRubricInfo();
                     }
                     break;
 
@@ -311,6 +334,9 @@ public class TeacherActivity extends AppCompatActivity
                 case InformationTracker.STUDENTS_SCORE_TRACKER:
                     updateSignatureInfo(output.getContent());
                     fillSignatureList();
+                    break;
+                case InformationTracker.RUBRIC_TRACKER:
+                    fillRubricList(output.getContent());
                     break;
             }
         }
@@ -378,6 +404,12 @@ public class TeacherActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        if(id == R.id.new_rubric) {
+            Log.d("NavClick", "Procediendo a crear nueva rúbrica");
+        }
+        else {
+            Log.d("NavClick", this.rubrics_ids.get(id));
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
