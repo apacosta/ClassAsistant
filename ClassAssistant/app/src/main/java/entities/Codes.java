@@ -13,4 +13,8 @@ public class Codes {
 
     // Request codes
     public static final int LOGIN_REQUEST_CODE = 1;
+
+    // Result codes
+    public static final int RESULT_OK = 1;
+    public static final int RESULT_ERROR = 0;
 }

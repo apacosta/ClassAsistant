@@ -9,6 +9,7 @@ import java.util.HashMap;
 public class StandardTransactionOutput {
     private final HashMap<String, String> content = new HashMap<>();
     private int status = 0;
+    private int type = 0;
 
 
     public void addContent(String key, String value) {
@@ -21,7 +22,6 @@ public class StandardTransactionOutput {
 
     public static StandardTransactionOutput nullTransactionOutput() {
         StandardTransactionOutput out = new StandardTransactionOutput();
-        out.addContent("null", "null");
         out.status = -1;
 
         return out;
@@ -32,5 +32,13 @@ public class StandardTransactionOutput {
             return true;
         else
             return false;
+    }
+
+    public int getResultType() {
+        return this.type;
+    }
+
+    public void setResultType(int type) {
+        this.type = type;
     }
 }

@@ -13,21 +13,15 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
+import entities.Codes;
 import io.DBManagerSignature;
 import minimum.MinSignature;
 
 
-public class ActivityAddAsignature extends Activity implements OnClickListener {
+public class DialogAddSignature extends Activity implements OnClickListener {
 
     private EditText nameText;
     private Button updateBtn, deleteBtn;
-    private EditText idText;
-
-    private long _id;
-
-    private DBManagerSignature dbManager;
-    private MinSignature min;
-    private String method = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,25 +29,9 @@ public class ActivityAddAsignature extends Activity implements OnClickListener {
 
         setContentView(R.layout.activity_addasignature);
 
-        try{
-            this.min = (MinSignature) getIntent().getSerializableExtra("materia");
-            this.method = getIntent().getStringExtra("method");
-        }
-        catch(Exception e) {
-
-        }
-        if(method.equals("create")) {
-            setTitle("Nueva asignatura");
-        }
-        else {
-            setTitle("Cambiar nombre");
-        }
-
         nameText = (EditText) findViewById(R.id.asignaturename);
 
         updateBtn = (Button) findViewById(R.id.btn_update);
-        dbManager = new DBManagerSignature(this);
-        dbManager.open();
         updateBtn.setOnClickListener(this);
     }
 
@@ -62,17 +40,15 @@ public class ActivityAddAsignature extends Activity implements OnClickListener {
         switch (v.getId()) {
             case R.id.btn_update:
                 String name = nameText.getText().toString();
-                if(method != null) {
-                    if(method.equals("create")) {
-                        dbManager.insert(name,"","","","");
-                    }
-                    else {
-                        dbManager.update(min.getID(), name, "", "", "", "");
-                    }
+                if(name.isEmpty()) {
+                    setResult(Codes.RESULT_ERROR, new Intent());
+                }
+                else {
+                    Intent i = new Intent();
+                    i.putExtra("name", name);
+                    setResult(Codes.RESULT_OK, i);
                 }
 
-
-                setResult(1, new Intent());
                 finish();
                 break;
         }

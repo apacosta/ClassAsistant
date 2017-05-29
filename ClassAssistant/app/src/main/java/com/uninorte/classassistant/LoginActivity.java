@@ -92,7 +92,6 @@ public class LoginActivity extends AppCompatActivity {
                         progressDialog.dismiss();
                         finish();
                     }
-                    // ...
                 }
             });
     }

@@ -30,7 +30,7 @@ public class TrackerRepresentation {
             out.addContent("owner", this.owner);
             out.addContent("users", this.users);
 
-            out.addContent("result_type", "" + InformationTracker.SIGNATURE_TRACKER_DEEP);
+            out.setResultType(InformationTracker.SIGNATURE_TRACKER_DEEP);
 
             return out;
         }
@@ -50,7 +50,7 @@ public class TrackerRepresentation {
             out.addContent("name", this.name);
             out.addContent("last_online", this.last_online);
 
-            out.addContent("result_type", "" + InformationTracker.TEACHERS_TRACKER_DEEP);
+            out.setResultType(InformationTracker.TEACHERS_TRACKER_DEEP);
 
             return out;
         }

@@ -111,7 +111,7 @@ public class ActivitySignatures extends AppCompatActivity implements Transaction
         // Set intents for Signature and Rubric
         //this.signature_intent = new Intent(this, SignatureActivity.class);
         //this.rubric_intent = new Intent(this, ActivityRubric.class);
-        //this.add_asignature = new Intent(this,ActivityAddAsignature.class);
+        //this.add_asignature = new Intent(this,DialogAddSignature.class);
         //this.add_asignature.putExtra("method", "create");
 
         // Fill RecycleView with found data

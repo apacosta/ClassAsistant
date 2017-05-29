@@ -34,6 +34,7 @@ public class InformationTracker {
     private final DatabaseReference ref;
     private final int tracker_id;
     private String special_info = "";
+    private ValueEventListener ev;
 
     public InformationTracker(int tracker_id, FirebaseDatabase db, String deep_offset) {
         this.tracker_id = tracker_id;
@@ -41,7 +42,7 @@ public class InformationTracker {
         this.ref = db.getReference(db_path);
 
         // Attach a listener to read the data at our posts reference
-        ref.addValueEventListener(new ValueEventListener() {
+        this.ev = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 StandardTransactionOutput output = processSnapshot(dataSnapshot, InformationTracker.this.tracker_id);
@@ -56,7 +57,13 @@ public class InformationTracker {
             public void onCancelled(DatabaseError databaseError) {
                 Log.d("posts", "The read failed: " + databaseError.getCode());
             }
-        });
+        };
+
+        this.ref.addValueEventListener(ev);
+    }
+
+    public void unSubscribeFromSource() {
+        this.ref.removeEventListener(ev);
     }
 
     public void addListener(TransactionListeners l) {
@@ -81,7 +88,17 @@ public class InformationTracker {
 
         switch(id) {
             case SIGNATURE_TRACKER:
-                break;
+                StandardTransactionOutput sig_tr_o = new StandardTransactionOutput();
+                sig_tr_o.setResultType(SIGNATURE_TRACKER);
+                sig_tr_o.getContent().put("special_methods", this.special_info);
+
+                int con = 0;
+                for(DataSnapshot d: snap.getChildren()) {
+                    sig_tr_o.getContent().put(Integer.toString(con), d.getKey());
+                    ++con;
+                }
+
+                return sig_tr_o;
             case SIGNATURE_TRACKER_DEEP:
                 rep = snap.getValue(TrackerRepresentation.SignatureRepresentation.class);
                 break;
@@ -109,7 +126,7 @@ public class InformationTracker {
                 String sig = std[0];
                 String acum;
 
-                o.getContent().put("result_type", ""+InformationTracker.STUDENTS_SCORE_TRACKER);
+                o.setResultType(STUDENTS_SCORE_TRACKER);
                 o.getContent().put("sig_target", sig);
 
                 for(DataSnapshot d: snap.getChildren()) {
@@ -141,7 +158,9 @@ public class InformationTracker {
 
         switch (id) {
             case SIGNATURE_TRACKER:
+                Log.d("Processing", "HOla, i am Processing");
                 type = "signatures";
+                special_info = deepness;
                 break;
             case SIGNATURE_TRACKER_DEEP:
                 type = "signatures/" + deepness;

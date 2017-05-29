@@ -14,8 +14,8 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name=".ActivityAddAsignature"
-            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
+            android:name=".DialogAddSignature"
+            android:theme="@style/AppTheme.Dark.Dialog" />
         <activity
             android:name=".ActivityAddStudent"
             android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />

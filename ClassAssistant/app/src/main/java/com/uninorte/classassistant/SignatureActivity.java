@@ -5,16 +5,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ExpandableListView;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -71,7 +68,7 @@ public class SignatureActivity extends AppCompatActivity {
         add_student = new Intent(this,ActivityAddStudent.class);
         add_evaluation = new Intent(this,ActivityAddEvaluation.class);
 
-        rename_intent = new Intent(this, ActivityAddAsignature.class);
+        rename_intent = new Intent(this, DialogAddSignature.class);
         rename_intent.putExtra("method", "update");
         report_intent = new Intent(this, ActivityAddReport.class);
 

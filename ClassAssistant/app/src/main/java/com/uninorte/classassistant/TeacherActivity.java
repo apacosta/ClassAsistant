@@ -49,6 +49,9 @@ public class TeacherActivity extends AppCompatActivity
     private TextView navbar_user_name;
     private TextView navbar_email;
 
+    // Floating button variables
+    private String signature_on_creation_name = "";
+
     // Activity trackers
     private final ArrayList<InformationTracker> trackers = new ArrayList<>();
 
@@ -61,6 +64,7 @@ public class TeacherActivity extends AppCompatActivity
 
     // intents
     private Intent signature_intent;
+    private Intent add_signature_intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,8 +77,7 @@ public class TeacherActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                createNewSignature();
             }
         });
 
@@ -137,6 +140,7 @@ public class TeacherActivity extends AppCompatActivity
 
     private void createIntents() {
         this.signature_intent = new Intent(this, SignatureActivity.class);
+        this.add_signature_intent = new Intent(this, DialogAddSignature.class);
     }
 
     private void fillSignatureList() {
@@ -148,6 +152,7 @@ public class TeacherActivity extends AppCompatActivity
     }
 
     private void requestSignaturesInfo(String[] sig_ids) {
+        this.signatures_data = new ArrayList<>();
         for(String s: sig_ids) {
             InformationTracker tracker = new InformationTracker(InformationTracker.SIGNATURE_TRACKER_DEEP, database, s);
             tracker.addListener(this);
@@ -171,9 +176,8 @@ public class TeacherActivity extends AppCompatActivity
                 String[] r;
 
                 Set<String> k = hs.keySet();
-                k.remove("null");
                 k.remove("sig_target");
-                k.remove("result_type");
+
                 for(String v: k) {
                     String[] res = hs.get(v).split("-");
                     total_sig_per_std = 0.0;
@@ -197,7 +201,8 @@ public class TeacherActivity extends AppCompatActivity
                     exam_result += e;
                 }
 
-                exam_result = Math.floor((exam_result/results.size()) * 100) / 100;
+                if(results.size() != 0)
+                    exam_result = Math.floor((exam_result/results.size()) * 100) / 100;
                 s.setScoreAverage(exam_result);
 
                 // Count above average
@@ -215,15 +220,53 @@ public class TeacherActivity extends AppCompatActivity
         }
     }
 
+    private void createNewSignature() {
+        this.startActivityForResult(this.add_signature_intent, Codes.REQ_ADD_SIGNATURE);
+    }
+
+    private void selectNextPosibleId(Set<String> keys, HashMap<String, String> out) {
+
+        // Remove listener completly
+        InformationTracker tr = this.trackers.get(this.trackers.size()-1);
+        tr.unSubscribeFromSource();
+        tr.removeListener(-1);
+        this.trackers.remove(tr);
+
+        int max = 0;
+        for(String k: keys) {
+            if(max < Integer.parseInt(out.get(k).substring(2))) {
+                max = Integer.parseInt(out.get(k).substring(2));
+            }
+        }
+        ++max;
+        String tail = "";
+        if(max < 10) {
+            tail += "0";
+        }
+
+        tail += max;
+
+        // Create signature
+        database.getReference().child("signatures").child("pr"+tail).child("default_rubric").setValue("");
+        database.getReference().child("signatures").child("pr"+tail).child("evaluations").setValue("");
+        database.getReference().child("signatures").child("pr"+tail).child("id").setValue("pr"+tail);
+        database.getReference().child("signatures").child("pr"+tail).child("name").setValue(signature_on_creation_name);
+        database.getReference().child("signatures").child("pr"+tail).child("owner").setValue(user.getEmail());
+        database.getReference().child("signatures").child("pr"+tail).child("users").setValue("");
+
+        // Append signature to the teacher
+        database.getReference().child("teachers").child(username).child("courses").setValue(courses_id_stamps + "pr"+tail+";");
+    }
+
 
     @Override
     public void manageTransactionResult(StandardTransactionOutput output) {
-        for(String s: output.getContent().keySet()) {
-            Log.d("TransactionOutput", output.getContent().get(s));
-        }
-
         if(!output.isNull()) {
-            int result_type = Integer.parseInt(output.getContent().get("result_type"));
+            for(String s: output.getContent().keySet()) {
+                Log.d("TransactionOutput", output.getContent().get(s));
+            }
+
+            int result_type = output.getResultType();
             switch (result_type) {
                 case InformationTracker.TEACHERS_TRACKER_DEEP:
                     if(!this.header_user_name.getText().equals(output.getContent().get("name"))) {
@@ -243,11 +286,23 @@ public class TeacherActivity extends AppCompatActivity
                     }
                     break;
 
+                case InformationTracker.SIGNATURE_TRACKER:
+                    if(output.getContent().get("special_methods").equals("create")) {
+                        Set<String> keys = output.getContent().keySet();
+                        keys.remove("special_methods");
+                        selectNextPosibleId(keys, output.getContent());
+                    }
+                    break;
+
                 case InformationTracker.SIGNATURE_TRACKER_DEEP:
                     MinSignature ms = new MinSignature(1);
                     ms.setName(output.getContent().get("name"));
                     ms.setIdStr(output.getContent().get("id"));
-                    ms.setNumStudents(output.getContent().get("users").split(";").length);
+
+                    if(output.getContent().get("users").split(";")[0].equals(""))
+                        ms.setNumStudents(0);
+                    else
+                        ms.setNumStudents(output.getContent().get("users").split(";").length);
                     this.signatures_data.add(ms);
 
                     requestGeneralScoreData(output.getContent().get("id"), output.getContent().get("users"));
@@ -257,6 +312,18 @@ public class TeacherActivity extends AppCompatActivity
                     updateSignatureInfo(output.getContent());
                     fillSignatureList();
                     break;
+            }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int reqCode, int resCod, Intent data) {
+        if(reqCode == Codes.REQ_ADD_SIGNATURE) {
+            if(resCod == Codes.RESULT_OK) {
+                this.signature_on_creation_name = data.getStringExtra("name");
+                InformationTracker tracker = new InformationTracker(InformationTracker.SIGNATURE_TRACKER, database, "create");
+                tracker.addListener(this);
+                this.trackers.add(tracker);
             }
         }
     }
@@ -298,7 +365,10 @@ public class TeacherActivity extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
+        if(id == R.id.action_logout) {
+            FirebaseAuth.getInstance().signOut();
+            finish();
+        }
 
         return super.onOptionsItemSelected(item);
     }
