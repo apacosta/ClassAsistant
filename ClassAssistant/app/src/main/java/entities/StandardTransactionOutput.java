@@ -8,6 +8,7 @@ import java.util.HashMap;
 
 public class StandardTransactionOutput {
     private final HashMap<String, String> content = new HashMap<>();
+    private int status = 0;
 
 
     public void addContent(String key, String value) {
@@ -21,7 +22,15 @@ public class StandardTransactionOutput {
     public static StandardTransactionOutput nullTransactionOutput() {
         StandardTransactionOutput out = new StandardTransactionOutput();
         out.addContent("null", "null");
+        out.status = -1;
 
         return out;
+    }
+
+    public boolean isNull() {
+        if(this.status == -1)
+            return true;
+        else
+            return false;
     }
 }

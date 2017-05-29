@@ -27,11 +27,13 @@ public class InformationTracker {
     public static final int LOGS_TRACKER_DEEP = 7;
     public static final int TEACHERS_TRACKER = 8;
     public static final int TEACHERS_TRACKER_DEEP = 9;
+    public static final int STUDENTS_SCORE_TRACKER = 10;
 
 
     private ArrayList<TransactionListeners> listeners = new ArrayList<>();
     private final DatabaseReference ref;
     private final int tracker_id;
+    private String special_info = "";
 
     public InformationTracker(int tracker_id, FirebaseDatabase db, String deep_offset) {
         this.tracker_id = tracker_id;
@@ -98,7 +100,32 @@ public class InformationTracker {
             case TEACHERS_TRACKER:
                 break;
             case TEACHERS_TRACKER_DEEP:
+                rep = snap.getValue(TrackerRepresentation.TeacherRepresentation.class);
                 break;
+            case STUDENTS_SCORE_TRACKER:
+                StandardTransactionOutput o = new StandardTransactionOutput();
+
+                String[] std = special_info.split(";");
+                String sig = std[0];
+                String acum;
+
+                o.getContent().put("result_type", ""+InformationTracker.STUDENTS_SCORE_TRACKER);
+                o.getContent().put("sig_target", sig);
+
+                for(DataSnapshot d: snap.getChildren()) {
+                    for(int i = 1; i < std.length; ++i) {
+                        if(d.getKey().equals(std[i])) {
+                            acum = "";
+                            for(DataSnapshot e: d.getChildren()) {
+                                if(e.getKey().split("_")[0].equals(sig)) {
+                                    acum += e.getValue() + "-";
+                                }
+                            }
+                            o.getContent().put(std[i], acum);
+                        }
+                    }
+                }
+                return o;
         }
 
         if(rep != null) {
@@ -134,6 +161,11 @@ public class InformationTracker {
             case TEACHERS_TRACKER:
                 break;
             case TEACHERS_TRACKER_DEEP:
+                type = "teachers/" + deepness;
+                break;
+            case STUDENTS_SCORE_TRACKER:
+                type = "eval-results";
+                special_info = deepness;
                 break;
         }
 

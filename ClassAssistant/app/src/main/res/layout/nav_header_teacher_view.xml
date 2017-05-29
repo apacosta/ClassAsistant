@@ -37,7 +37,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/teacher_name"
+                android:id="@+id/teacher_navbar_user_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/nav_header_vertical_spacing"
@@ -46,7 +46,7 @@
                 android:textSize="18sp" />
 
             <TextView
-                android:id="@+id/teacher_id"
+                android:id="@+id/teacher_navbar_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="lumap@gmail.com" />

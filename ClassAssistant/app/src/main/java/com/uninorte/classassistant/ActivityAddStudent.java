@@ -13,7 +13,6 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
-import io.DBManagerSignature;
 import io.DBManagerStudent;
 import minimum.MinSignature;
 
@@ -64,7 +63,7 @@ public class ActivityAddStudent extends Activity implements OnClickListener {
     }
 
    public void returnHome() {
-        Intent home_intent = new Intent(getApplicationContext(), ActivitySignature.class)
+        Intent home_intent = new Intent(getApplicationContext(), SignatureActivity.class)
                 .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(home_intent);
     }

@@ -109,7 +109,7 @@ public class ActivitySignatures extends AppCompatActivity implements Transaction
         tracker.addListener(this);
 
         // Set intents for Signature and Rubric
-        //this.signature_intent = new Intent(this, ActivitySignature.class);
+        //this.signature_intent = new Intent(this, SignatureActivity.class);
         //this.rubric_intent = new Intent(this, ActivityRubric.class);
         //this.add_asignature = new Intent(this,ActivityAddAsignature.class);
         //this.add_asignature.putExtra("method", "create");
@@ -121,13 +121,13 @@ public class ActivitySignatures extends AppCompatActivity implements Transaction
 
     private void fillSignatureList() {
         // Initialize Signature List with the content of the database
-        this.signatures_data = MinSignature.dbParse(cc.getContent(SQLCommandGenerator.getSignaturesAll()));
+        /*this.signatures_data = MinSignature.dbParse(cc.getContent(SQLCommandGenerator.getSignaturesAll()));
 
         view_adapter = new SignatureAdapter(this, signatures_data, signature_intent);
 
         recycler_view = (RecyclerView) this.findViewById(R.id.recycle);
         recycler_view.setAdapter(view_adapter);
-        recycler_view.setLayoutManager(new LinearLayoutManager(this));
+        recycler_view.setLayoutManager(new LinearLayoutManager(this));*/
     }
 
     @Override

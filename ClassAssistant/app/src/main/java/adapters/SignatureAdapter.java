@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.uninorte.classassistant.ActivitySignatures;
 import com.uninorte.classassistant.R;
+import com.uninorte.classassistant.TeacherActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,10 +29,10 @@ import minimum.MinSignature;
 public class SignatureAdapter extends RecyclerView.Adapter<SignatureAdapter.MyHolder> {
     private LayoutInflater inflater;
     private List<MinSignature> data = Collections.emptyList();
-    private ActivitySignatures master;
+    private TeacherActivity master;
     private Intent master_signature_intent;
 
-    public SignatureAdapter(ActivitySignatures act, List<MinSignature> data, Intent i) {
+    public SignatureAdapter(TeacherActivity act, List<MinSignature> data, Intent i) {
         this.master_signature_intent = i;
         this.master = act;
         inflater = LayoutInflater.from(master);
@@ -40,7 +41,7 @@ public class SignatureAdapter extends RecyclerView.Adapter<SignatureAdapter.MyHo
 
     @Override
     public MyHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.row, parent, false);
+        View view = inflater.inflate(R.layout.signature_list_element, parent, false);
         MyHolder holder = new MyHolder(view, this.data);
         return holder;
     }
@@ -49,6 +50,11 @@ public class SignatureAdapter extends RecyclerView.Adapter<SignatureAdapter.MyHo
     public void onBindViewHolder(MyHolder holder, int position) {
         MinSignature info = data.get(position);
         holder.signature_name.setText(info.getName());
+        holder.signature_std_num.setText("" + data.get(position).getNumStudents());
+        holder.signature_avg.setText("" + data.get(position).getScoreAverage());
+        holder.signature_blw_avg.setText("" + data.get(position).getNumStudentsBelowAvg());
+        holder.signature_abv_avg.setText("" + data.get(position).getNumStudentsAboveAvg());
+
     }
 
     @Override
@@ -58,13 +64,21 @@ public class SignatureAdapter extends RecyclerView.Adapter<SignatureAdapter.MyHo
 
     class MyHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView signature_name;
+        private TextView signature_avg;
+        private TextView signature_std_num;
+        private TextView signature_blw_avg;
+        private TextView signature_abv_avg;
         private List<MinSignature> data;
 
         public MyHolder(View itemView, List<MinSignature> data) {
             super(itemView);
             this.data = data;
 
-            signature_name = (TextView) itemView.findViewById(R.id.sig_item);
+            signature_name = (TextView) itemView.findViewById(R.id.sig_name_list);
+            signature_std_num = (TextView) itemView.findViewById(R.id.num_std_list);
+            signature_avg = (TextView) itemView.findViewById(R.id.prom_std_list);
+            signature_blw_avg = (TextView) itemView.findViewById(R.id.below_prom_std_list);
+            signature_abv_avg = (TextView) itemView.findViewById(R.id.above_prom_std_list);
             signature_name.setOnClickListener(ViewOnClickListener);
             itemView.setOnClickListener(this);
         }

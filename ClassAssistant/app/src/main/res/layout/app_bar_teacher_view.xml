@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.uninorte.classassistant.TeacherView">
+    tools:context="com.uninorte.classassistant.TeacherActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -35,7 +35,7 @@
                     android:textSize="24sp" />
 
                 <TextView
-                    android:id="@+id/user_name"
+                    android:id="@+id/teacher_appbar_user_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Lu Mapa Di Praix" />

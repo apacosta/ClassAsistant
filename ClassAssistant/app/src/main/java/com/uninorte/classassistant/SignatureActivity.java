@@ -34,7 +34,7 @@ import minimum.MinExam;
 import minimum.MinSignature;
 import minimum.MinStudent;
 
-public class ActivitySignature extends AppCompatActivity {
+public class SignatureActivity extends AppCompatActivity {
 
     private Signature signature;
 

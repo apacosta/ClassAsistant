@@ -14,7 +14,6 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import io.DBManagerEvaluation;
-import io.DBManagerSignature;
 import minimum.MinSignature;
 
 
@@ -62,7 +61,7 @@ public class ActivityAddEvaluation extends Activity implements OnClickListener {
     }
 
    public void returnHome() {
-        Intent home_intent = new Intent(getApplicationContext(), ActivitySignature.class)
+        Intent home_intent = new Intent(getApplicationContext(), SignatureActivity.class)
                 .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(home_intent);
     }
