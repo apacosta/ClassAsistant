@@ -30,7 +30,7 @@ import io.SQLCommandGenerator;
 import io.TransactionListeners;
 import minimum.MinSignature;
 
-public class ActivitySignatures extends AppCompatActivity implements TransactionListeners {
+public class OldActivitySignatures extends AppCompatActivity implements TransactionListeners {
 
     private List<MinSignature> signatures_data = new ArrayList<>();
 

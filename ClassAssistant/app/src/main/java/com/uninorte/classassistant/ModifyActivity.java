@@ -68,7 +68,7 @@ public class ModifyActivity extends Activity implements OnClickListener {
     }
 
     public void returnHome() {
-        Intent home_intent = new Intent(getApplicationContext(), ActivitySignatures.class)
+        Intent home_intent = new Intent(getApplicationContext(), OldActivitySignatures.class)
                 .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(home_intent);
     }

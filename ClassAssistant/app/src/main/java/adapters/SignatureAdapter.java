@@ -1,25 +1,19 @@
 package adapters;
 
-import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.uninorte.classassistant.ActivitySignatures;
 import com.uninorte.classassistant.R;
 import com.uninorte.classassistant.TeacherActivity;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import entities.Codes;
-import entities.Signature;
 import minimum.MinSignature;
 
 /**

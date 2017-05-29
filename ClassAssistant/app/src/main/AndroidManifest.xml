@@ -9,10 +9,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ActivitySignatures"
+            android:name=".OldActivitySignatures"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".DialogAddSignature"
             android:theme="@style/AppTheme.Dark.Dialog" />
@@ -44,6 +43,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".RubricCreationActivity"
+            android:label="@string/title_activity_rubric_creation"
+            android:theme="@style/AppTheme.Darker" />
+        <activity android:name=".DialogCategory"></activity>
     </application>
 
 </manifest>

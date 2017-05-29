@@ -30,6 +30,8 @@ public class InformationTracker {
     public static final int STUDENTS_SCORE_TRACKER = 10;
     public static final int RUBRIC_TRACKER = 11;
     public static final int RUBRIC_TRACKER_DEEP = 12;
+    public static final int CATEGORY_TRACKER = 13;
+    public static final int CATEGORY_TRACKER_DEEP = 14;
 
 
     private ArrayList<TransactionListeners> listeners = new ArrayList<>();
@@ -157,6 +159,12 @@ public class InformationTracker {
                 }
                 return rub_o;
             case RUBRIC_TRACKER_DEEP:
+                rep = snap.getValue(TrackerRepresentation.RubricRepresentation.class);
+                break;
+            case CATEGORY_TRACKER:
+                break;
+            case CATEGORY_TRACKER_DEEP:
+                rep = snap.getValue(TrackerRepresentation.CategoryRepresentation.class);
                 break;
         }
 
@@ -205,6 +213,12 @@ public class InformationTracker {
                 type = "rubrics/" + deepness;
                 break;
             case RUBRIC_TRACKER_DEEP:
+                type = "rubrics/" + deepness;
+                break;
+            case CATEGORY_TRACKER:
+                break;
+            case CATEGORY_TRACKER_DEEP:
+                type = "categories/" + deepness;
                 break;
         }
 

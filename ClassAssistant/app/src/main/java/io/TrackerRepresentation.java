@@ -55,4 +55,42 @@ public class TrackerRepresentation {
             return out;
         }
     }
+
+    public static class RubricRepresentation implements GeneralizedRepresentation {
+        public String categories;
+        public String name;
+
+        @Override
+        public StandardTransactionOutput extractGeneralizedOutput() {
+            StandardTransactionOutput out = new StandardTransactionOutput();
+            out.addContent("categories", this.categories);
+            out.addContent("name", this.name);
+
+            out.setResultType(InformationTracker.RUBRIC_TRACKER_DEEP);
+
+            return out;
+        }
+    }
+
+    public static class CategoryRepresentation implements GeneralizedRepresentation {
+        public String item_weight;
+        public String items;
+        public String name;
+        public String weight;
+        public String id;
+
+        @Override
+        public StandardTransactionOutput extractGeneralizedOutput() {
+            StandardTransactionOutput out = new StandardTransactionOutput();
+            out.addContent("item_weight", this.item_weight);
+            out.addContent("items", this.items);
+            out.addContent("name", this.name);
+            out.addContent("weight", this.weight);
+            out.addContent("id", this.id);
+
+            out.setResultType(InformationTracker.CATEGORY_TRACKER_DEEP);
+
+            return out;
+        }
+    }
 }

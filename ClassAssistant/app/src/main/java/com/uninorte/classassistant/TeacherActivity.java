@@ -57,7 +57,7 @@ public class TeacherActivity extends AppCompatActivity
     private String signature_on_creation_name = "";
 
     // Activity trackers
-    private final ArrayList<InformationTracker> trackers = new ArrayList<>();
+    private ArrayList<InformationTracker> trackers = new ArrayList<>();
 
     // Firebase variables
     private FirebaseAuth mAuth;
@@ -69,6 +69,7 @@ public class TeacherActivity extends AppCompatActivity
     // intents
     private Intent signature_intent;
     private Intent add_signature_intent;
+    private Intent modify_create_rubric;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,6 +151,7 @@ public class TeacherActivity extends AppCompatActivity
     private void createIntents() {
         this.signature_intent = new Intent(this, SignatureActivity.class);
         this.add_signature_intent = new Intent(this, DialogAddSignature.class);
+        this.modify_create_rubric = new Intent(this, RubricCreationActivity.class);
     }
 
     private void fillSignatureList() {
@@ -280,6 +282,15 @@ public class TeacherActivity extends AppCompatActivity
         database.getReference().child("teachers").child(username).child("courses").setValue(courses_id_stamps + "pr"+tail+";");
     }
 
+    private void removeAllInformationTrackers() {
+        for(InformationTracker tr: this.trackers) {
+            tr.unSubscribeFromSource();
+            tr.removeListener(-1);
+        }
+
+        this.trackers = new ArrayList<>();
+    }
+
 
     @Override
     public void manageTransactionResult(StandardTransactionOutput output) {
@@ -404,12 +415,19 @@ public class TeacherActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+
+        removeAllInformationTrackers();
+
         if(id == R.id.new_rubric) {
+            this.modify_create_rubric.putExtra("concept", "new");
             Log.d("NavClick", "Procediendo a crear nueva rúbrica");
         }
         else {
+            this.modify_create_rubric.putExtra("concept", this.username + "/" + this.rubrics_ids.get(id));
             Log.d("NavClick", this.rubrics_ids.get(id));
         }
+
+        startActivity(this.modify_create_rubric);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
