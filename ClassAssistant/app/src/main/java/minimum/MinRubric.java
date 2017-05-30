@@ -11,7 +11,7 @@ public class MinRubric implements Serializable {
     private ArrayList<MinCategory> categories = new ArrayList<>();
     private final String id;
     private int sum_weights = 0;
-    private String name;
+    private String name = "";
 
     public MinRubric(String id) {
         this.id = id;

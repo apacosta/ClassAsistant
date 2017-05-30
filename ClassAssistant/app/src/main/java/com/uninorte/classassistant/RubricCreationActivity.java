@@ -185,6 +185,15 @@ public class RubricCreationActivity extends AppCompatActivity implements Transac
         generateUIElements();
     }
 
+    private void removeAllInformationTrackers() {
+        for(InformationTracker tr: this.trackers) {
+            tr.unSubscribeFromSource();
+            tr.removeListener(-1);
+        }
+
+        this.trackers = new ArrayList<>();
+    }
+
     @Override
     public void manageTransactionResult(StandardTransactionOutput output) {
         if(!output.isNull()) {
@@ -200,11 +209,57 @@ public class RubricCreationActivity extends AppCompatActivity implements Transac
                     break;
                 case InformationTracker.CATEGORY_TRACKER:
                     guessNewCategoryID(output.getContent());
-
                     break;
             }
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        // Remove all listeners
+        removeAllInformationTrackers();
+
+        if(!rubric_title_edit.getText().toString().equals("")) {
+            this.rubric.setName(rubric_title_edit.getText().toString());
+        }
+
+        if(!this.rubric.getName().equals("")) {
+            // Update database
+            // First update rubric's database
+            String s = "";
+            for(MinCategory c: this.rubric.getCategories()) {
+                s += c.getId() + ";";
+            }
+
+            database.getReference().child("rubrics")
+                    .child(rubric_owner).child(this.rubric.getId()).child("name").setValue(this.rubric.getName());
+            database.getReference().child("rubrics")
+                    .child(rubric_owner).child(this.rubric.getId()).child("categories").setValue(s);
+
+            // Now update each category
+            for(MinCategory c: this.rubric.getCategories()) {
+                s = "";
+                for(String ss: c.getItemsDescriptions()) {
+                    s += ss + ";";
+                }
+                database.getReference().child("categories").child(c.getId()).child("items").setValue(s);
+
+                s = "";
+                for(Integer ss: c.getItemsWeights()) {
+                    s += ss + ";";
+                }
+                database.getReference().child("categories").child(c.getId()).child("item_weight").setValue(s);
+
+                database.getReference().child("categories").child(c.getId()).child("id").setValue(c.getId());
+                database.getReference().child("categories").child(c.getId()).child("name").setValue(c.getName());
+                database.getReference()
+                        .child("categories").child(c.getId()).child("weight").setValue(Integer.toString(c.getWeight()));
+            }
+        }
+
+        super.onBackPressed();
+    }
+
 
     @Override
     public void onActivityResult(int req_code, int res_code, Intent data) {
