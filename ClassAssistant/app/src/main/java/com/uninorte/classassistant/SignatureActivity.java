@@ -116,6 +116,31 @@ public class SignatureActivity extends AppCompatActivity
         buildFullSignatureInformation(sig);
     }
 
+    public void deleteEvaluation(int index) {
+        String eval_id = this.signature.getEvaluations().get(index).getID();
+        this.signature.getEvaluations().remove(index);
+
+        String a = "";
+        for(int i = 0; i < parent_sig.getEvaluations().split(";").length; ++i) {
+            if(i != index) {
+                a += parent_sig.getEvaluations().split(";")[i] + ";";
+            }
+        }
+
+        this.parent_sig.setEvaluations(a);
+
+        // Removing from firebase
+        database.getReference().child("evaluations").child(eval_id).removeValue();
+        database.getReference().child("signatures").child(signature.getID()).child("evaluations").setValue(a);
+
+        // Remove evaluation results for each student
+        for(MinStudent s: signature.getStudents()) {
+            database.getReference().child("eval-results").child(s.getID()).child(eval_id).removeValue();
+        }
+
+        buildFullSignatureInformation(parent_sig);
+    }
+
     private void createIntents() {
         this.evaluation_intent = new Intent(this, TeacherActivity.class);
         this.add_evaluation = new Intent(this, DialogNewEvaluation.class);
@@ -161,25 +186,31 @@ public class SignatureActivity extends AppCompatActivity
     }
 
     private void buildFullSignatureInformation(MinSignature sig) {
-        // Get all students representation
-        for(String s: sig.getStudents().split(";")) {
-            InformationTracker tracker = new InformationTracker(InformationTracker.STUDENTS_TRACKER_DEEP, database, s);
-            tracker.addListener(this);
-            trackers.add(tracker);
+        if(!sig.getStudents().equals("")) {
+            // Get all students representation
+            for (String s : sig.getStudents().split(";")) {
+                InformationTracker tracker = new InformationTracker(InformationTracker.STUDENTS_TRACKER_DEEP, database, s);
+                tracker.addListener(this);
+                trackers.add(tracker);
+            }
         }
 
-        // Get all students representation
-        for(String s: sig.getPetitions().split(";")) {
-            InformationTracker tracker = new InformationTracker(InformationTracker.PETITIONS_TRACKER, database, s);
-            tracker.addListener(this);
-            trackers.add(tracker);
+        if(!sig.getPetitions().equals("")) {
+            // Get all petitions representation
+            for (String s : sig.getPetitions().split(";")) {
+                InformationTracker tracker = new InformationTracker(InformationTracker.PETITIONS_TRACKER, database, s);
+                tracker.addListener(this);
+                trackers.add(tracker);
+            }
         }
 
-        // Get all evaluations representations
-        for(String s: sig.getEvaluations().split(";")) {
-            InformationTracker tracker = new InformationTracker(InformationTracker.EVALUATION_TRACKER_DEEP, database, s);
-            tracker.addListener(this);
-            trackers.add(tracker);
+        if(!sig.getEvaluations().equals("")) {
+            // Get all evaluations representations
+            for (String s : sig.getEvaluations().split(";")) {
+                InformationTracker tracker = new InformationTracker(InformationTracker.EVALUATION_TRACKER_DEEP, database, s);
+                tracker.addListener(this);
+                trackers.add(tracker);
+            }
         }
     }
 

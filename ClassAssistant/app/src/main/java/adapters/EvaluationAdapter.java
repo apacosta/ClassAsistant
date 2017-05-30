@@ -5,6 +5,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.uninorte.classassistant.R;
@@ -56,6 +58,7 @@ public class EvaluationAdapter extends RecyclerView.Adapter<EvaluationAdapter.My
     class MyHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView signature_name;
         private TextView weight;
+        private ImageView delete_btn;
         private List<MinEvaluation> data;
 
         public MyHolder(View itemView, List<MinEvaluation> data) {
@@ -64,7 +67,8 @@ public class EvaluationAdapter extends RecyclerView.Adapter<EvaluationAdapter.My
 
             signature_name = (TextView) itemView.findViewById(R.id.eval_name_list);
             weight = (TextView) itemView.findViewById(R.id.weight_eval_list);
-            signature_name.setOnClickListener(ViewOnClickListener);
+            this.delete_btn = (ImageView) itemView.findViewById(R.id.delete_eval);
+            delete_btn.setOnClickListener(ViewOnClickListener);
             itemView.setOnClickListener(this);
         }
 
@@ -77,10 +81,7 @@ public class EvaluationAdapter extends RecyclerView.Adapter<EvaluationAdapter.My
         private View.OnClickListener ViewOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //MinEvaluation selected = data.get(getAdapterPosition());
-
-                //master_signature_intent.putExtra("selected_signature", selected);
-                //master.startActivityForResult(master_signature_intent, Codes.REQ_EVALUATION);
+                master.deleteEvaluation(getAdapterPosition());
             }
         };
     }
