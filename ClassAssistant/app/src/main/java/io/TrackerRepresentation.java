@@ -19,6 +19,7 @@ public class TrackerRepresentation {
         public String owner;
         public String users;
         public String id;
+        public String petitions;
 
         @Override
         public StandardTransactionOutput extractGeneralizedOutput() {
@@ -29,6 +30,7 @@ public class TrackerRepresentation {
             out.addContent("name", this.name);
             out.addContent("owner", this.owner);
             out.addContent("users", this.users);
+            out.addContent("petitions", this.petitions);
 
             out.setResultType(InformationTracker.SIGNATURE_TRACKER_DEEP);
 
@@ -89,6 +91,50 @@ public class TrackerRepresentation {
             out.addContent("id", this.id);
 
             out.setResultType(InformationTracker.CATEGORY_TRACKER_DEEP);
+
+            return out;
+        }
+    }
+
+    public static class EvaluationRepresentation implements GeneralizedRepresentation {
+        public String annotations;
+        public String rubric;
+        public String name;
+        public String state;
+        public String weight;
+        public String id;
+
+        @Override
+        public StandardTransactionOutput extractGeneralizedOutput() {
+            StandardTransactionOutput out = new StandardTransactionOutput();
+            out.addContent("annotations", this.annotations);
+            out.addContent("rubric", this.rubric);
+            out.addContent("name", this.name);
+            out.addContent("weight", this.weight);
+            out.addContent("state", this.state);
+            out.addContent("id", this.id);
+
+            out.setResultType(InformationTracker.EVALUATION_TRACKER_DEEP);
+
+            return out;
+        }
+    }
+
+    public static class StudentRepresentation implements GeneralizedRepresentation {
+        public String courses;
+        public String email;
+        public String name;
+        public String last_online;
+
+        @Override
+        public StandardTransactionOutput extractGeneralizedOutput() {
+            StandardTransactionOutput out = new StandardTransactionOutput();
+            out.addContent("courses", this.courses);
+            out.addContent("email", this.email);
+            out.addContent("name", this.name);
+            out.addContent("last_online", this.last_online);
+
+            out.setResultType(InformationTracker.STUDENTS_TRACKER_DEEP);
 
             return out;
         }

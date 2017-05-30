@@ -1,218 +1,206 @@
 package com.uninorte.classassistant;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
-import android.widget.ExpandableListView;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TextView;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import com.google.firebase.database.FirebaseDatabase;
 
-import adapters.ExamAdapter;
-import adapters.StudentHideableAdapter;
-import entities.Codes;
+import java.util.ArrayList;
+
+import adapters.EvaluationAdapter;
 import entities.Signature;
-import io.Connector;
-import io.DBManagerSignature;
-import io.DBRepresentation;
-import io.SQLCommandGenerator;
-import io.SQLPacket;
-import minimum.MinExam;
+import entities.StandardTransactionOutput;
+import io.InformationTracker;
+import io.TransactionListeners;
+import minimum.MinEvaluation;
+import minimum.MinRubric;
 import minimum.MinSignature;
 import minimum.MinStudent;
 
-public class SignatureActivity extends AppCompatActivity {
+public class SignatureActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener, TransactionListeners {
 
-    private Signature signature;
+    private TextView appbar_title;
 
-    private ExamAdapter exam_adapter;
-    private StudentHideableAdapter student_adapter;
+    // Evaluation list variables
+    private EvaluationAdapter view_adapter;
+    private RecyclerView recycler_view;
 
-    private RecyclerView exam_recycler_view;
-    private TextView signature_information_view;
+    // Intents
+    private Intent evaluation_intent;
 
-    private Intent exam_intent;
-    private Intent student_intent;
-    private Intent add_student;
-    private Intent add_evaluation;
+    // Overall controller
+    Signature signature;
+    MinSignature parent_sig;
 
-    private Intent rename_intent;
-    private Intent report_intent;
-
-
-    ExpandableListView student_list_view;
-    HashMap<String, List<String>> expandableListDetail;
+    // Firebase variables
+    FirebaseDatabase database;
+    ArrayList<InformationTracker> trackers = new ArrayList<>();
+    ArrayList<InformationTracker> temp_trackers = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signature);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-        // Information field is not user enabled
-        this.signature_information_view = (TextView) findViewById(R.id.signatureInformation);
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
 
-        // Set intents
-        exam_intent = new Intent(this, ActivityExam.class);
-        student_intent = new Intent(this, ActivityStudent.class);
-        add_student = new Intent(this,ActivityAddStudent.class);
-        add_evaluation = new Intent(this,ActivityAddEvaluation.class);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
 
-        rename_intent = new Intent(this, DialogAddSignature.class);
-        rename_intent.putExtra("method", "update");
-        report_intent = new Intent(this, ActivityAddReport.class);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
-        // Receive signature information
-        Serializable master_info = getIntent().getSerializableExtra(getString(R.string.sig_token));
-        this.signature = Signature.expandIntoSignature((MinSignature) master_info);
-        rename_intent.putExtra("materia", master_info);
+        // INITIALIZATION CODE
+        this.appbar_title = (TextView) findViewById(R.id.activity_name);
+        this.recycler_view = (RecyclerView) findViewById(R.id.recycle_evaluation_list);
 
-        // Set signature title
-        this.setTitle(this.signature.getName());
+        // Intents
+        createIntents();
 
-        // The MinSignature received was trimmed down to name and id, so Signature needs to be
-        // refilled
-        this.dbHarvest();
+        MinSignature sig = (MinSignature) getIntent().getSerializableExtra("selected_signature");
+        parent_sig = sig;
+        this.appbar_title.setText(sig.getName());
+        this.signature = new Signature(sig.getID());
+        this.signature.setName(sig.getName());
+        this.signature.setOwner(sig.getOwner());
 
-        // Fill list with gathered information
-        loadExamInformation();
-        loadStudentInformation();
+        // Retreive information from Firebase
+        database = FirebaseDatabase.getInstance();
+        buildFullSignatureInformation(sig);
+    }
+
+    private void createIntents() {
+        this.evaluation_intent = new Intent(this, TeacherActivity.class);
+    }
+
+    private void buildFullSignatureInformation(MinSignature sig) {
+        // Get all students representation
+        for(String s: sig.getStudents().split(";")) {
+            InformationTracker tracker = new InformationTracker(InformationTracker.STUDENTS_TRACKER_DEEP, database, s);
+            tracker.addListener(this);
+            trackers.add(tracker);
+        }
+
+        // Get all evaluations representations
+        for(String s: sig.getEvaluations().split(";")) {
+            InformationTracker tracker = new InformationTracker(InformationTracker.EVALUATION_TRACKER_DEEP, database, s);
+            tracker.addListener(this);
+            trackers.add(tracker);
+        }
+    }
+
+    private void attachInformationToSignature(StandardTransactionOutput out) {
+        if(out.getResultType() == InformationTracker.EVALUATION_TRACKER_DEEP) {
+            MinEvaluation ev = new MinEvaluation();
+            ev.setID(out.getContent().get("id"));
+            ev.setName(out.getContent().get("name"));
+            ev.setWeight(Integer.parseInt(out.getContent().get("weight")));
+
+            MinRubric m = new MinRubric(out.getContent().get("rubric"));
+            ev.setRubric(m);
+
+            this.signature.replaceEvaluation(ev);
+        }
+        else if(out.getResultType() == InformationTracker.STUDENTS_TRACKER_DEEP) {
+            MinStudent std = new MinStudent();
+            std.setID(out.getContent().get("email").split("@")[0]);
+            std.setSignatures(out.getContent().get("courses"));
+            std.setName(out.getContent().get("name"));
+
+            this.signature.replaceStudent(std);
+        }
+
+        // Check if trackers finished
+        if(this.signature.getEvaluations().size() == this.parent_sig.getEvaluations().split(";").length &&
+                this.signature.getStudents().size() == this.parent_sig.getStudents().split(";").length) {
+            drawUI();
+        }
+    }
+
+    private void drawUI() {
+        view_adapter = new EvaluationAdapter(this, signature.getEvaluations(), this.evaluation_intent);
+
+        recycler_view.setAdapter(view_adapter);
+        recycler_view.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_signature, menu);
-
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.signature, menu);
         return true;
     }
 
-    private void dbHarvest() {
-        Connector cc = new Connector(this, DBRepresentation.TYPE_STUDENT);
-        this.signature.destroyEvaluations();
-        this.signature.destroyStudents();
-        // Get student info
-        SQLPacket pkg = SQLCommandGenerator.getStudentsFromSignature(signature.getID());
-        for(MinStudent s: MinStudent.dbParse(cc.getContent(pkg))) {
-            this.signature.addStudent(s);
-        }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
 
-        cc = new Connector(this, DBRepresentation.TYPE_EVALUATION);
-
-        // Get evaluation info
-        pkg = SQLCommandGenerator.getEvaluationFromSignature(signature.getID());
-        for(MinExam e: MinExam.dbParse(cc.getContent(pkg))) {
-            this.signature.addEvaluation(e);
-        }
-
+        return super.onOptionsItemSelected(item);
     }
 
-    private void loadExamInformation() {
-        this.exam_adapter = new ExamAdapter(this, this.signature.getEvaluations(), exam_intent);
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
 
-        this.exam_recycler_view = (RecyclerView) this.findViewById(R.id.recycle);
-        this.exam_recycler_view.setAdapter(this.exam_adapter);
-        this.exam_recycler_view.setLayoutManager(new LinearLayoutManager(this));
-    }
 
-    private void loadStudentInformation() {
-        this.student_list_view = (ExpandableListView) findViewById(R.id.signatureStudents);
-        expandableListDetail = new HashMap<String, List<String>>();
-        ArrayList<String> stud_list = new ArrayList<>();
-        for(MinStudent e: this.signature.getStudents()) {
-            stud_list.add(e.getName());
-        }
-        expandableListDetail.put("Estudiantes", stud_list);
-
-        ArrayList<String> expandableListTitle = new ArrayList<String>(expandableListDetail.keySet());
-        this.student_adapter = new StudentHideableAdapter(this, expandableListTitle, expandableListDetail);
-        this.student_list_view.setAdapter(this.student_adapter);
-        this.student_list_view.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-
-            @Override
-            public void onGroupExpand(int groupPosition) {
-            }
-        });
-
-        this.student_list_view.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
-
-            @Override
-            public void onGroupCollapse(int groupPosition) {
-            }
-        });
-
-        this.student_list_view.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-            @Override
-            public boolean onChildClick(ExpandableListView parent, View v,
-                                        int groupPosition, int childPosition, long id) {
-                MinStudent s = signature.getStudents().get(childPosition);
-                student_intent.putExtra("Selected_student", s);
-                startActivity(student_intent);
-                return false;
-            }
-        });
-    }
-
-    public void createStudent(MenuItem item) {
-
-        add_student.putExtra("asignatura",MinSignature.reduceIntoMinSignature(this.signature));
-        startActivityForResult(add_student, Codes.REQ_ADD_STUDENT);
-    }
-
-    public void createEvaluation(MenuItem item) {
-
-        add_evaluation.putExtra("asignatura",MinSignature.reduceIntoMinSignature(this.signature));
-        startActivityForResult(add_evaluation, Codes.REQ_ADD_EVALUATION);
-
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 
     @Override
-    public void onActivityResult(int req_code, int res_code, Intent data){
-        if(req_code == Codes.REQ_EVALUATION) {
-            setResult(1, new Intent());
-            finish();
+    public void manageTransactionResult(StandardTransactionOutput output) {
+        if(!output.isNull()) {
+            switch (output.getResultType()) {
+                case InformationTracker.EVALUATION_TRACKER_DEEP:
+                    attachInformationToSignature(output);
+                    break;
+                case InformationTracker.STUDENTS_TRACKER_DEEP:
+                    attachInformationToSignature(output);
+                    break;
+            }
         }
-        else if(req_code == Codes.EDT_REPORT) {}
-        else {
-            this.dbHarvest();
-
-            // Fill list with gathered information
-            loadExamInformation();
-            loadStudentInformation();
-        }
-    }
-
-    public void renameSignature(MenuItem item) {
-        startActivityForResult(this.rename_intent, Codes.REQ_EVALUATION);
-    }
-
-    public void deleteSignature(MenuItem item) {
-        DBManagerSignature manager = new DBManagerSignature(this);
-        manager.open();
-        manager.delete(this.signature.getID());
-        manager.close();
-        onActivityResult(Codes.REQ_EVALUATION, 1, new Intent());
-    }
-
-    public void reportSignature(MenuItem item) {
-        report_intent.putExtra("method", "edit");
-        report_intent.putExtra("materia", MinSignature.reduceIntoMinSignature(this.signature));
-        startActivityForResult(report_intent, Codes.EDT_REPORT);
-    }
-
-    public void seeReports(View view) {
-        report_intent.putExtra("method", "view");
-        report_intent.putExtra("materia", MinSignature.reduceIntoMinSignature(this.signature));
-        startActivityForResult(report_intent, Codes.EDT_REPORT);
     }
 }

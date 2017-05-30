@@ -15,26 +15,11 @@ import io.DBRepresentation;
 public class MinStudent implements Serializable {
 
     private String name = "";
-    private long id = 0;
+    private String id = "";
+    private String signatures = "";
 
-    public MinStudent(long id) {
+    public MinStudent() {}
 
-    }
-
-    public static ArrayList<MinStudent> dbParse(ArrayList<HashMap> map) {
-        ArrayList<MinStudent> s = new ArrayList<>();
-
-        for(HashMap e: map) {
-
-            try {
-                MinStudent es = new MinStudent(Long.parseLong((String) e.get(DBRepresentation.Student._ID)));
-                es.setName((String) e.get(DBRepresentation.Student.COLUMN_NAME));
-                s.add(es);
-            }
-            catch(Exception f) {}
-        }
-        return s;
-    }
 
     public String getName() {
         return this.name;
@@ -44,18 +29,19 @@ public class MinStudent implements Serializable {
         this.name = name;
     }
 
-    public long getID() {
+    public String getID() {
         return this.id;
     }
 
-    public void setID(String nam) {
-        this.name = name;
+    public void setID(String id) {
+        this.id = id;
     }
 
-    public static MinStudent fromExternalID(long id, MinStudent s) {
-        MinStudent ss = new MinStudent(id);
-        ss.setName(s.getName());
+    public void setSignatures(String signatures) {
+        this.signatures = signatures;
+    }
 
-        return ss;
+    public String getSignatures() {
+        return this.signatures;
     }
 }

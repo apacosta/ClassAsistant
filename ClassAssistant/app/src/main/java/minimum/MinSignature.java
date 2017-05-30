@@ -14,15 +14,58 @@ import io.DBRepresentation;
 public class MinSignature implements Serializable {
 
     private String name = "";
+    private String students = "";
+    private String evaluations = "";
+    private String petitions = "";
+    private String default_rubric = "";
+    private String owner = "";
     private double score_average = 0;
     private int num_students = 0;
     private int num_students_below_avg = 0;
     private int num_students_above_avg = 0;
-    private final long id;
-    private String id_str = "";
+    private String id = "";
 
-    public MinSignature(long id) {
-        this.id = id;
+    public MinSignature() {
+    }
+
+    public void setStudents(String s) {
+        this.students = s;
+    }
+
+    public String getStudents() {
+        return this.students;
+    }
+
+    public void setEvaluations(String evaluations) {
+        this.evaluations = evaluations;
+    }
+
+    public String getEvaluations() {
+        return this.evaluations;
+    }
+
+    public void setPetitions(String petitions) {
+        this.petitions = petitions;
+    }
+
+    public String getPetitions() {
+        return this.petitions;
+    }
+
+    public void setDefaultRubric(String df) {
+        this.default_rubric = df;
+    }
+
+    public String getDefaultRubric() {
+        return this.default_rubric;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    public String getOwner() {
+        return this.owner;
     }
 
     public void setName(String name) {
@@ -49,14 +92,6 @@ public class MinSignature implements Serializable {
         return this.num_students_above_avg;
     }
 
-    public String getIdStr() {
-        return id_str;
-    }
-
-    public void setIdStr(String id) {
-        this.id_str = id;
-    }
-
     public void setScoreAverage(double avg) {
         this.score_average = avg;
     }
@@ -73,34 +108,12 @@ public class MinSignature implements Serializable {
         this.num_students_above_avg = aa;
     }
 
-    public long getID() {
+    public String getID() {
         return this.id;
     }
 
-    public static ArrayList<MinSignature> dbParse(ArrayList<HashMap> map) {
-        ArrayList<MinSignature> data = new ArrayList<>();
-        MinSignature s;
-        for(HashMap e: map) {
-            String id = (String) e.get(DBRepresentation.Signature._ID);
-
-            s = new MinSignature(Long.parseLong(id));
-            s.setName((String) e.get(DBRepresentation.Signature.COLUMN_NAME));
-            data.add(s);
-        }
-        return data;
-    }
-
-    public static MinSignature reduceIntoMinSignature(Signature signature) {
-        MinSignature s = new MinSignature(signature.getID());
-        s.setName(signature.getName());
-        return s;
-    }
-
-    public static MinSignature fromExternalID(long id, MinSignature s) {
-        MinSignature ss = new MinSignature(id);
-        ss.setName(s.getName());
-
-        return ss;
+    public void setID(String id) {
+        this.id = id;
     }
 
 }

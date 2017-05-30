@@ -12,4 +12,5 @@
     <string name="software_name_version">Class Assistant. V. 2.37. Rev 3.</string>
     <string name="logout">Logout</string>
     <string name="title_activity_rubric_creation">RubricCreationActivity</string>
+    <string name="title_activity_signature">SignatureActivity</string>
 </resources>

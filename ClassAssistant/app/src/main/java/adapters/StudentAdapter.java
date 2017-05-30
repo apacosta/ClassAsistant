@@ -1,7 +1,6 @@
 package adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +12,7 @@ import com.uninorte.classassistant.R;
 import java.util.Collections;
 import java.util.List;
 
-import minimum.MinExam;
-import minimum.MinStudent;
+import minimum.MinEvaluation;
 
 /**
  * Created by asmateus on 5/04/17.
@@ -23,10 +21,10 @@ import minimum.MinStudent;
 public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.MyHolder> {
 
     private LayoutInflater inflater;
-    private List<MinExam> data = Collections.emptyList();
+    private List<MinEvaluation> data = Collections.emptyList();
     private Context master;
 
-    public StudentAdapter(Context context, List<MinExam> data) {
+    public StudentAdapter(Context context, List<MinEvaluation> data) {
         this.master = context;
         inflater = LayoutInflater.from(context);
         this.data = data;
@@ -41,7 +39,7 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.MyHolder
 
     @Override
     public void onBindViewHolder(MyHolder holder, int position) {
-        MinExam info = data.get(position);
+        MinEvaluation info = data.get(position);
         holder.tv.setText(info.getName());
         //holder.tv2.setText(info.result);
         //holder.tv3.setText(info.perc);

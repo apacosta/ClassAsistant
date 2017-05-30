@@ -1,10 +1,8 @@
 package entities;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import minimum.MinExam;
-import minimum.MinSignature;
+import minimum.MinEvaluation;
 import minimum.MinStudent;
 
 /**
@@ -16,54 +14,100 @@ import minimum.MinStudent;
  */
 public final class Signature {
 
+    private final String id;
+
     private String name = "";
-    private long id;
-    private List<MinStudent> students = new ArrayList<>();
-    private List<MinExam> evaluations = new ArrayList<>();
+    private String default_rubric_id = "";
+    private String signature_owner = "";
 
-    private Signature(){}
+    private ArrayList<MinEvaluation> evaluations = new ArrayList<>();
+    private ArrayList<MinStudent> students = new ArrayList<>();
+    private ArrayList<String> available_rubrics_ids = new ArrayList<>();
 
-    public void setName(String name) {
-        this.name = name;
+    public Signature(String id) {
+        this.id = id;
+    }
+
+    public String getID() {
+        return this.id;
+    }
+
+    public void replaceEvaluation(MinEvaluation ev) {
+        int i;
+        boolean check = false;
+        for(i = 0; i < evaluations.size(); ++i) {
+            if(ev.getID().equals(evaluations.get(i).getID())) {
+                check = true;
+                break;
+            }
+        }
+        if(check == true) {
+            evaluations.remove(i);
+        }
+        evaluations.add(ev);
+    }
+
+    public void replaceStudent(MinStudent ev) {
+        int i;
+        boolean check = false;
+        for(i = 0; i < students.size(); ++i) {
+            if(ev.getID().equals(students.get(i).getID())) {
+                check = true;
+                break;
+            }
+        }
+        if(check == true) {
+            students.remove(i);
+        }
+        students.add(ev);
     }
 
     public String getName() {
         return this.name;
     }
 
-    public long getID() {
-        return this.id;
+    public String getDefaultRubricId() {
+        return this.default_rubric_id;
     }
 
-    public void addEvaluation(MinExam e) {
-        this.evaluations.add(e);
+    public String getOwner() {
+        return this.signature_owner;
     }
 
-    public void addStudent(MinStudent s) {
-        this.students.add(s);
-    }
-
-    public void destroyStudents() {
-        this.students = new ArrayList<MinStudent>();
-    }
-
-    public void destroyEvaluations() {
-        this.evaluations = new ArrayList<MinExam>();
-    }
-
-    public List<MinExam> getEvaluations() {
+    public ArrayList<MinEvaluation> getEvaluations() {
         return this.evaluations;
     }
 
-    public List<MinStudent> getStudents() {
+    public ArrayList<MinStudent> getStudents() {
         return this.students;
     }
 
-    public static Signature expandIntoSignature(MinSignature minsig) {
-        Signature s = new Signature();
-        s.name = minsig.getName();
-        s.id = minsig.getID();
-
-        return s;
+    public ArrayList<String> getAvailableRubricIDs() {
+        return this.available_rubrics_ids;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDefaultRubricId(String dr) {
+        this.default_rubric_id = dr;
+    }
+
+    public void setOwner(String owner) {
+        this.signature_owner = owner;
+    }
+
+    public void setEvaluations(ArrayList<MinEvaluation> ev) {
+        this.evaluations = ev;
+    }
+
+    public void setStudents(ArrayList<MinStudent> es) {
+        this.students = es;
+    }
+
+    public void getAvailableRubricIDs(ArrayList<String> ru) {
+        this.available_rubrics_ids = ru;
+    }
+
 }

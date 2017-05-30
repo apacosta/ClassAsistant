@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -192,7 +191,7 @@ public class TeacherActivity extends AppCompatActivity
 
     private void updateSignatureInfo(HashMap<String, String> hs) {
         for(MinSignature s: this.signatures_data) {
-            if(s.getIdStr().equals(hs.get("sig_target"))) {
+            if(s.getID().equals(hs.get("sig_target"))) {
                 int exam_weight = 0;
                 ArrayList<Double> results = new ArrayList<>();
                 double exam_result;
@@ -329,9 +328,14 @@ public class TeacherActivity extends AppCompatActivity
                     break;
 
                 case InformationTracker.SIGNATURE_TRACKER_DEEP:
-                    MinSignature ms = new MinSignature(1);
+                    MinSignature ms = new MinSignature();
                     ms.setName(output.getContent().get("name"));
-                    ms.setIdStr(output.getContent().get("id"));
+                    ms.setID(output.getContent().get("id"));
+                    ms.setStudents(output.getContent().get("users"));
+                    ms.setEvaluations(output.getContent().get("evaluations"));
+                    ms.setOwner(output.getContent().get("owner"));
+                    ms.setDefaultRubric(output.getContent().get("default_rubric"));
+                    ms.setPetitions(output.getContent().get("petitions"));
 
                     if(output.getContent().get("users").split(";")[0].equals(""))
                         ms.setNumStudents(0);

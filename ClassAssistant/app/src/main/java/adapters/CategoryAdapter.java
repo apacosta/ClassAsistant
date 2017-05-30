@@ -9,11 +9,7 @@ import android.widget.TextView;
 
 import com.uninorte.classassistant.R;
 
-import java.util.Collections;
-import java.util.List;
-
 import minimum.MinCategory;
-import minimum.MinExam;
 
 /**
  * Created by asmateus on 29/05/17.

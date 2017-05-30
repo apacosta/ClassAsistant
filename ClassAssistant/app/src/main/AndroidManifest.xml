@@ -16,17 +16,8 @@
             android:name=".DialogAddSignature"
             android:theme="@style/AppTheme.Dark.Dialog" />
         <activity
-            android:name=".ActivityAddStudent"
-            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
-        <activity
-            android:name=".ActivityAddEvaluation"
-            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
-        <activity
             android:name=".ActivityAddReport"
             android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
-        <activity android:name=".SignatureActivity" />
-        <activity android:name=".ActivityExam" />
-        <activity android:name=".ActivityStudent" />
         <activity
             android:name=".ActivityRubric"
             android:label="@string/title_activity_rubric" />
@@ -47,8 +38,13 @@
             android:name=".RubricCreationActivity"
             android:label="@string/title_activity_rubric_creation"
             android:theme="@style/AppTheme.Darker" />
-        <activity android:name=".DialogCategory"
-            android:theme="@style/AppTheme.Light.Dialog"></activity>
+        <activity
+            android:name=".DialogCategory"
+            android:theme="@style/AppTheme.Light.Dialog" />
+        <activity
+            android:name=".SignatureActivity"
+            android:label="@string/title_activity_signature"
+            android:theme="@style/AppTheme.Darker"></activity>
     </application>
 
 </manifest>

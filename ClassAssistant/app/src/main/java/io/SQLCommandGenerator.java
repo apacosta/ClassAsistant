@@ -2,7 +2,7 @@ package io;
 
 import android.content.ContentValues;
 
-import minimum.MinExam;
+import minimum.MinEvaluation;
 import minimum.MinSignature;
 import minimum.MinStudent;
 
@@ -76,7 +76,7 @@ public class SQLCommandGenerator {
         return v;
     }
 
-    public static ContentValues setNewEvaluation(MinExam exam) {
+    public static ContentValues setNewEvaluation(MinEvaluation exam) {
         ContentValues v = new ContentValues();
 
         v.put(DBRepresentation.Evaluation.COLUMN_NAME, exam.getName());

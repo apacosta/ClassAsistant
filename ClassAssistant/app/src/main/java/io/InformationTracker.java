@@ -109,10 +109,12 @@ public class InformationTracker {
             case EVALUATION_TRACKER:
                 break;
             case EVALUATION_TRACKER_DEEP:
+                rep = snap.getValue(TrackerRepresentation.EvaluationRepresentation.class);
                 break;
             case STUDENTS_TRACKER:
                 break;
             case STUDENTS_TRACKER_DEEP:
+                rep = snap.getValue(TrackerRepresentation.StudentRepresentation.class);
                 break;
             case LOGS_TRACKER:
                 break;
@@ -199,10 +201,12 @@ public class InformationTracker {
             case EVALUATION_TRACKER:
                 break;
             case EVALUATION_TRACKER_DEEP:
+                type = "evaluations/" + deepness;
                 break;
             case STUDENTS_TRACKER:
                 break;
             case STUDENTS_TRACKER_DEEP:
+                type = "students/" + deepness;
                 break;
             case LOGS_TRACKER:
                 break;

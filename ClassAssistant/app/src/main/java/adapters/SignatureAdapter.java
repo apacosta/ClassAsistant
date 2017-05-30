@@ -88,7 +88,7 @@ public class SignatureAdapter extends RecyclerView.Adapter<SignatureAdapter.MyHo
             public void onClick(View v) {
                 MinSignature selected = data.get(getAdapterPosition());
 
-                master_signature_intent.putExtra(master.getString(R.string.sig_token), selected);
+                master_signature_intent.putExtra("selected_signature", selected);
                 master.startActivityForResult(master_signature_intent, Codes.REQ_EVALUATION);
             }
         };

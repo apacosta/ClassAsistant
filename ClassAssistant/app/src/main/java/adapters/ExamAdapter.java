@@ -13,8 +13,7 @@ import com.uninorte.classassistant.R;
 import java.util.Collections;
 import java.util.List;
 
-import minimum.MinExam;
-import minimum.MinSignature;
+import minimum.MinEvaluation;
 
 /**
  * Created by asmateus on 5/04/17.
@@ -22,11 +21,11 @@ import minimum.MinSignature;
 
 public class ExamAdapter extends RecyclerView.Adapter<ExamAdapter.MyHolder> {
     private LayoutInflater inflater;
-    private List<MinExam> data = Collections.emptyList();
+    private List<MinEvaluation> data = Collections.emptyList();
     private Context master;
     private Intent master_exam_intent;
 
-    public ExamAdapter(Context context, List<MinExam> data, Intent i) {
+    public ExamAdapter(Context context, List<MinEvaluation> data, Intent i) {
         this.master = context;
         this.master_exam_intent = i;
         inflater = LayoutInflater.from(context);
@@ -42,7 +41,7 @@ public class ExamAdapter extends RecyclerView.Adapter<ExamAdapter.MyHolder> {
 
     @Override
     public void onBindViewHolder(MyHolder holder, int position) {
-        MinExam info = data.get(position);
+        MinEvaluation info = data.get(position);
         holder.exam_name.setText(info.getName());
     }
 
@@ -71,7 +70,7 @@ public class ExamAdapter extends RecyclerView.Adapter<ExamAdapter.MyHolder> {
         private View.OnClickListener ViewOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MinExam e = data.get(getAdapterPosition());
+                MinEvaluation e = data.get(getAdapterPosition());
                 master_exam_intent.putExtra("Selected_exam", e);
                 master.startActivity(master_exam_intent);
             }
