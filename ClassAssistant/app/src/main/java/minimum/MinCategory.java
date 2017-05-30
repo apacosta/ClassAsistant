@@ -52,6 +52,15 @@ public class MinCategory implements Serializable {
         return this.weight;
     }
 
+    public int getSumItemsWeights() {
+        int sum = 0;
+        for(Integer c: this.items_weights) {
+            sum += c;
+        }
+
+        return sum;
+    }
+
     public ArrayList<String> getItemsDescriptions() {
         return this.items_descriptions;
     }

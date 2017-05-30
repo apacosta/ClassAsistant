@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.uninorte.classassistant.R;
+import com.uninorte.classassistant.RubricCreationActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,8 +30,11 @@ public class RubricAdapter extends RecyclerView.Adapter<RubricAdapter.MyHolder>{
     private LayoutInflater inflater;
     private ArrayList<MinCategory> data;
     private Intent master_signature_intent;
+    private RubricCreationActivity master;
 
-    public RubricAdapter(Context master, ArrayList<MinCategory> data, Intent i) {
+    public RubricAdapter(RubricCreationActivity master, ArrayList<MinCategory> data, Intent i) {
+
+        this.master = master;
         this.master_signature_intent = i;
         inflater = LayoutInflater.from(master);
         this.data = data;
@@ -90,14 +94,16 @@ public class RubricAdapter extends RecyclerView.Adapter<RubricAdapter.MyHolder>{
         private View.OnClickListener deleteOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("deleting", "" + getAdapterPosition());
+                master.rubric.getCategories().remove(getAdapterPosition());
+                master.generateUIElements();
             }
         };
 
         private View.OnClickListener ViewOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                master_signature_intent.putExtra("category", data.get(getAdapterPosition()));
+                master.startActivityForResult(master_signature_intent, Codes.CATEGORY_EDIT_REQUEST_CODE);
             }
         };
     }

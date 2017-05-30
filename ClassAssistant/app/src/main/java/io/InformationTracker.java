@@ -162,7 +162,15 @@ public class InformationTracker {
                 rep = snap.getValue(TrackerRepresentation.RubricRepresentation.class);
                 break;
             case CATEGORY_TRACKER:
-                break;
+                StandardTransactionOutput cat_o = new StandardTransactionOutput();
+                cat_o.setResultType(CATEGORY_TRACKER);
+
+                int i = 0;
+                for(DataSnapshot d: snap.getChildren()) {
+                    cat_o.getContent().put(Integer.toString(i), d.getKey());
+                }
+
+                return cat_o;
             case CATEGORY_TRACKER_DEEP:
                 rep = snap.getValue(TrackerRepresentation.CategoryRepresentation.class);
                 break;
@@ -216,6 +224,8 @@ public class InformationTracker {
                 type = "rubrics/" + deepness;
                 break;
             case CATEGORY_TRACKER:
+                type = "categories";
+                special_info = deepness;
                 break;
             case CATEGORY_TRACKER_DEEP:
                 type = "categories/" + deepness;

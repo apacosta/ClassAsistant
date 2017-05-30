@@ -56,6 +56,12 @@
         <item name="android:background">@color/primary</item>
     </style>
 
+    <style name="AppTheme.Light.Dialog" parent="Theme.AppCompat.Dialog">
+        <item name="colorAccent">@color/primary</item>
+        <item name="android:textColorPrimary">@color/primary_darker</item>
+        <item name="android:background">@color/iron</item>
+    </style>
+
     <style name="AppTheme.Dark.ListItem" parent="Theme.AppCompat.NoActionBar">
         <item name="colorAccent">@color/primary</item>
         <item name="android:textColorPrimary">@color/primary</item>

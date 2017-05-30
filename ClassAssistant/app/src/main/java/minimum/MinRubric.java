@@ -18,6 +18,11 @@ public class MinRubric implements Serializable {
     }
 
     public int getSumWeights() {
+        int sum = 0;
+        for(MinCategory c: categories) {
+            sum += c.getWeight();
+        }
+        this.sum_weights = sum;
         return this.sum_weights;
     }
 

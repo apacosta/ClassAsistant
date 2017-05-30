@@ -419,7 +419,22 @@ public class TeacherActivity extends AppCompatActivity
         removeAllInformationTrackers();
 
         if(id == R.id.new_rubric) {
-            this.modify_create_rubric.putExtra("concept", "new");
+            // Select next rubric
+            int max = 0;
+            for(String e: rubrics_ids) {
+                if(max < Integer.parseInt(e.split("_")[1])) {
+                    max = Integer.parseInt(e.split("_")[1]);
+                }
+            }
+            ++max;
+
+            String tail = "";
+            if(max < 10) {
+                tail += "0";
+            }
+            tail += max;
+
+            this.modify_create_rubric.putExtra("concept", this.username + "/rub_" + tail);
             Log.d("NavClick", "Procediendo a crear nueva rúbrica");
         }
         else {

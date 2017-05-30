@@ -47,7 +47,8 @@
             android:name=".RubricCreationActivity"
             android:label="@string/title_activity_rubric_creation"
             android:theme="@style/AppTheme.Darker" />
-        <activity android:name=".DialogCategory"></activity>
+        <activity android:name=".DialogCategory"
+            android:theme="@style/AppTheme.Light.Dialog"></activity>
     </application>
 
 </manifest>

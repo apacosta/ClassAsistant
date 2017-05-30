@@ -5,6 +5,7 @@ package entities;
  */
 
 public class Codes {
+
     public static final int REQ_EVALUATION = 111;
     public static final int REQ_ADD_SIGNATURE = 1111;
     public static final int REQ_ADD_EVALUATION = 1000;
@@ -13,6 +14,8 @@ public class Codes {
 
     // Request codes
     public static final int LOGIN_REQUEST_CODE = 1;
+    public static final int CATEGORY_EDIT_REQUEST_CODE = 2;
+
 
     // Result codes
     public static final int RESULT_OK = 1;
