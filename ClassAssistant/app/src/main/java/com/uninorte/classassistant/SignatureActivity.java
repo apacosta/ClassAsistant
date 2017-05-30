@@ -118,7 +118,7 @@ public class SignatureActivity extends AppCompatActivity
 
     private void createIntents() {
         this.evaluation_intent = new Intent(this, TeacherActivity.class);
-        this.add_evaluation = new Intent(this, TeacherActivity.class);
+        this.add_evaluation = new Intent(this, DialogNewEvaluation.class);
     }
 
     private void createNewEvalDialog() {
@@ -298,4 +298,14 @@ public class SignatureActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    public void onActivityResult(int reqCode, int resCod, Intent data) {
+        if(reqCode == Codes.EVALUATION_CREATE_REQUEST) {
+            if(resCod == Codes.RESULT_OK) {
+                String new_sig_name = data.getStringExtra("name");
+                Integer new_sig_weight = Integer.parseInt(data.getStringExtra("weight"));
+                createNewEvaluation(new_sig_name, new_sig_weight);
+            }
+        }
+    }
 }

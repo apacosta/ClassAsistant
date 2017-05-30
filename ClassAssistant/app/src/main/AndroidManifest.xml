@@ -45,6 +45,8 @@
             android:name=".SignatureActivity"
             android:label="@string/title_activity_signature"
             android:theme="@style/AppTheme.Darker" />
+        <activity android:name=".DialogNewEvaluation"
+            android:theme="@style/AppTheme.Dark.Dialog"></activity>
     </application>
 
 </manifest>
