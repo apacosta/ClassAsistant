@@ -86,6 +86,7 @@ public class SignatureAdapter extends RecyclerView.Adapter<SignatureAdapter.MyHo
         private View.OnClickListener ViewOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                master.removeAllInformationTrackers();
                 MinSignature selected = data.get(getAdapterPosition());
 
                 master_signature_intent.putExtra("selected_signature", selected);

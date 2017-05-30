@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item
-        android:title="Join Requests"
-        android:icon="@drawable/join_request"
-        android:id="@+id/join_request_item">
-    </item>
+    <item android:title="Join Requests"
+        android:id="@+id/join_request_item"
+        android:icon="@drawable/join_request">
+        <menu>
 
-    <item
-        android:title="Current Students"
-        android:icon="@drawable/students_w"
-        android:id="@+id/students_list_sig_drawer">
+        </menu>
     </item>
+    <item android:title="Current Students"
+        android:id="@+id/students_list_sig_drawer"
+        android:icon="@drawable/students_w">
+        <menu>
 
+        </menu>
+    </item>
 </menu>

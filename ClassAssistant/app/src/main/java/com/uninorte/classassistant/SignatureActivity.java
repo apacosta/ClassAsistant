@@ -6,6 +6,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.SubMenu;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,12 +18,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
 import adapters.EvaluationAdapter;
+import entities.Codes;
 import entities.Signature;
 import entities.StandardTransactionOutput;
 import io.InformationTracker;
@@ -44,13 +48,22 @@ public class SignatureActivity extends AppCompatActivity
     private Intent evaluation_intent;
 
     // Overall controller
-    Signature signature;
-    MinSignature parent_sig;
+    private Signature signature;
+    private MinSignature parent_sig;
+
+    // Navigation Drawer lists
+    private Menu navdrawer_menu;
+    private long join_request_group_id;
+    private long current_std_group_id;
+    private ArrayList<MinStudent> current_students_ids = new ArrayList<>();
+    private ArrayList<MinStudent> join_request_ids = new ArrayList<>();
 
     // Firebase variables
-    FirebaseDatabase database;
-    ArrayList<InformationTracker> trackers = new ArrayList<>();
-    ArrayList<InformationTracker> temp_trackers = new ArrayList<>();
+    private FirebaseDatabase database;
+    private ArrayList<InformationTracker> trackers = new ArrayList<>();
+    private ArrayList<InformationTracker> temp_trackers = new ArrayList<>();
+
+    private Intent add_evaluation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,8 +76,10 @@ public class SignatureActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                if(signature.getSumEvaluationWeights() < 100)
+                    createNewEvalDialog();
+                else
+                    Toast.makeText(SignatureActivity.this, "This signature is FULL", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -75,7 +90,12 @@ public class SignatureActivity extends AppCompatActivity
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        View header_view = navigationView.getHeaderView(0);
         navigationView.setNavigationItemSelectedListener(this);
+
+        this.navdrawer_menu = navigationView.getMenu();
+        //this.current_std_group_id = R.id.join_request_group_id;
+        //this.join_request_group_id = R.id.join_request_group_id;
 
         // INITIALIZATION CODE
         this.appbar_title = (TextView) findViewById(R.id.activity_name);
@@ -98,12 +118,59 @@ public class SignatureActivity extends AppCompatActivity
 
     private void createIntents() {
         this.evaluation_intent = new Intent(this, TeacherActivity.class);
+        this.add_evaluation = new Intent(this, TeacherActivity.class);
+    }
+
+    private void createNewEvalDialog() {
+        this.startActivityForResult(add_evaluation, Codes.EVALUATION_CREATE_REQUEST);
+    }
+
+    private void createNewEvaluation(String n, int w) {
+        // Get new evaluation id
+        int max = 0;
+        for(MinEvaluation e: this.signature.getEvaluations()) {
+            if(max < Integer.parseInt(e.getID().split("_")[1])) {
+                max = Integer.parseInt(e.getID().split("_")[1]);
+            }
+        }
+        ++max;
+        String tail = "";
+        if(max < 10)
+            tail += "0";
+        tail += max;
+
+        String new_id = this.signature.getID() + "_" + tail;
+
+        // Upload changes to database (EVALUATIONS)
+        database.getReference().child("evaluations").child(new_id).child("annotations").setValue("");
+        database.getReference().child("evaluations").child(new_id).child("id").setValue(new_id);
+        database.getReference().child("evaluations").child(new_id).child("rubric").setValue("");
+        database.getReference().child("evaluations").child(new_id).child("state").setValue("");
+        database.getReference().child("evaluations").child(new_id).child("name").setValue(n);
+        database.getReference().child("evaluations").child(new_id).child("weight").setValue("" + w);
+
+        // Upload changes to database (SIGNATURE)
+        database.getReference().child("signatures")
+                .child(this.signature.getID()).child("evaluations").setValue(parent_sig.getEvaluations() + new_id + ";");
+
+        parent_sig.setEvaluations(parent_sig.getEvaluations() + new_id + ";");
+
+        InformationTracker tracker = new InformationTracker(InformationTracker.EVALUATION_TRACKER_DEEP, database, new_id);
+        tracker.addListener(this);
+        trackers.add(tracker);
     }
 
     private void buildFullSignatureInformation(MinSignature sig) {
         // Get all students representation
         for(String s: sig.getStudents().split(";")) {
             InformationTracker tracker = new InformationTracker(InformationTracker.STUDENTS_TRACKER_DEEP, database, s);
+            tracker.addListener(this);
+            trackers.add(tracker);
+        }
+
+        // Get all students representation
+        for(String s: sig.getPetitions().split(";")) {
+            InformationTracker tracker = new InformationTracker(InformationTracker.PETITIONS_TRACKER, database, s);
             tracker.addListener(this);
             trackers.add(tracker);
         }
@@ -117,6 +184,7 @@ public class SignatureActivity extends AppCompatActivity
     }
 
     private void attachInformationToSignature(StandardTransactionOutput out) {
+        Log.d("EvalTracker", "" + out.getContent().get("id"));
         if(out.getResultType() == InformationTracker.EVALUATION_TRACKER_DEEP) {
             MinEvaluation ev = new MinEvaluation();
             ev.setID(out.getContent().get("id"));
@@ -136,11 +204,33 @@ public class SignatureActivity extends AppCompatActivity
 
             this.signature.replaceStudent(std);
         }
+        else if(out.getResultType() == InformationTracker.PETITIONS_TRACKER) {
+            MinStudent std = new MinStudent();
+            std.setID(out.getContent().get("email").split("@")[0]);
+            std.setSignatures(out.getContent().get("courses"));
+            std.setName(out.getContent().get("name"));
+
+            this.signature.replacePetitionStudent(std);
+        }
 
         // Check if trackers finished
         if(this.signature.getEvaluations().size() == this.parent_sig.getEvaluations().split(";").length &&
-                this.signature.getStudents().size() == this.parent_sig.getStudents().split(";").length) {
+                this.signature.getStudents().size() == this.parent_sig.getStudents().split(";").length &&
+                this.signature.getPetitions().size() == this.parent_sig.getPetitions().split(";").length) {
             drawUI();
+            addSignatureStudents();
+        }
+    }
+
+    private void addSignatureStudents() {
+        for(MinStudent s: this.signature.getStudents()) {
+            this.navdrawer_menu.getItem(1).getSubMenu().add(0, 2000 + this.current_students_ids.size(), 0, s.getName());
+            this.current_students_ids.add(s);
+        }
+
+        for(MinStudent s: this.signature.getPetitions()) {
+            this.navdrawer_menu.getItem(0).getSubMenu().add(0, 1000 + this.join_request_ids.size(), 0, s.getName());
+            this.join_request_ids.add(s);
         }
     }
 
@@ -184,6 +274,7 @@ public class SignatureActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
+        Log.d("ItemSelected", "" + id);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -200,7 +291,11 @@ public class SignatureActivity extends AppCompatActivity
                 case InformationTracker.STUDENTS_TRACKER_DEEP:
                     attachInformationToSignature(output);
                     break;
+                case InformationTracker.PETITIONS_TRACKER:
+                    attachInformationToSignature(output);
+                    break;
             }
         }
     }
+
 }

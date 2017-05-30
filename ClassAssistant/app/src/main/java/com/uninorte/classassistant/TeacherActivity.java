@@ -281,7 +281,7 @@ public class TeacherActivity extends AppCompatActivity
         database.getReference().child("teachers").child(username).child("courses").setValue(courses_id_stamps + "pr"+tail+";");
     }
 
-    private void removeAllInformationTrackers() {
+    public void removeAllInformationTrackers() {
         for(InformationTracker tr: this.trackers) {
             tr.unSubscribeFromSource();
             tr.removeListener(-1);
@@ -294,9 +294,6 @@ public class TeacherActivity extends AppCompatActivity
     @Override
     public void manageTransactionResult(StandardTransactionOutput output) {
         if(!output.isNull()) {
-            for(String s: output.getContent().keySet()) {
-                Log.d("TransactionOutput", output.getContent().get(s));
-            }
 
             int result_type = output.getResultType();
             switch (result_type) {

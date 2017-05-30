@@ -15,7 +15,7 @@ public class Codes {
     // Request codes
     public static final int LOGIN_REQUEST_CODE = 1;
     public static final int CATEGORY_EDIT_REQUEST_CODE = 2;
-
+    public static final int EVALUATION_CREATE_REQUEST = 3;
 
     // Result codes
     public static final int RESULT_OK = 1;

@@ -22,6 +22,7 @@ public final class Signature {
 
     private ArrayList<MinEvaluation> evaluations = new ArrayList<>();
     private ArrayList<MinStudent> students = new ArrayList<>();
+    private ArrayList<MinStudent> petitions = new ArrayList<>();
     private ArrayList<String> available_rubrics_ids = new ArrayList<>();
 
     public Signature(String id) {
@@ -62,6 +63,30 @@ public final class Signature {
         students.add(ev);
     }
 
+    public void replacePetitionStudent(MinStudent ev) {
+        int i;
+        boolean check = false;
+        for(i = 0; i < petitions.size(); ++i) {
+            if(ev.getID().equals(petitions.get(i).getID())) {
+                check = true;
+                break;
+            }
+        }
+        if(check == true) {
+            petitions.remove(i);
+        }
+        petitions.add(ev);
+    }
+
+    public int getSumEvaluationWeights() {
+        int sum = 0;
+        for(MinEvaluation e: evaluations) {
+            sum += e.getWeight();
+        }
+
+        return sum;
+    }
+
     public String getName() {
         return this.name;
     }
@@ -80,6 +105,10 @@ public final class Signature {
 
     public ArrayList<MinStudent> getStudents() {
         return this.students;
+    }
+
+    public ArrayList<MinStudent> getPetitions() {
+        return this.petitions;
     }
 
     public ArrayList<String> getAvailableRubricIDs() {
@@ -104,6 +133,10 @@ public final class Signature {
 
     public void setStudents(ArrayList<MinStudent> es) {
         this.students = es;
+    }
+
+    public void setPetitions(ArrayList<MinStudent> es) {
+        this.petitions = es;
     }
 
     public void getAvailableRubricIDs(ArrayList<String> ru) {
