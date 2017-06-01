@@ -145,6 +145,13 @@ public class InformationTracker {
                                     acum += e.getValue() + "-";
                                 }
                             }
+                            acum = acum.substring(0, acum.length()-1);
+                            acum += "@";
+                            for(DataSnapshot e: d.getChildren()) {
+                                if(e.getKey().split("_")[0].equals(sig)) {
+                                    acum += e.getKey() + "-";
+                                }
+                            }
                             o.getContent().put(std[i], acum);
                         }
                     }
@@ -156,8 +163,9 @@ public class InformationTracker {
 
                 for(DataSnapshot d: snap.getChildren()) {
                     for(DataSnapshot de: d.getChildren()) {
-                        if(de.getKey().equals("name"))
+                        if(de.getKey().equals("name")) {
                             rub_o.getContent().put(d.getKey(), de.getValue().toString());
+                        }
                     }
                 }
                 return rub_o;

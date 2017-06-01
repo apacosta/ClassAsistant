@@ -13,4 +13,5 @@
     <string name="logout">Logout</string>
     <string name="title_activity_rubric_creation">RubricCreationActivity</string>
     <string name="title_activity_signature">SignatureActivity</string>
+    <string name="title_activity_evaluation">EvaluationActivity</string>
 </resources>

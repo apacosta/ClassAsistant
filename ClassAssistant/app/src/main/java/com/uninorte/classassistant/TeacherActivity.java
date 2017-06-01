@@ -163,8 +163,10 @@ public class TeacherActivity extends AppCompatActivity
 
     private void fillRubricList(HashMap<String, String> hs) {
         for(String k: hs.keySet()) {
-            rubrics_ids.add(k);
-            rubrics_menu_list.add(hs.get(k));
+            if(!rubrics_ids.contains(k)) {
+                rubrics_menu_list.add(0, rubrics_ids.size(), 0, hs.get(k));
+                rubrics_ids.add(k);
+            }
         }
     }
 
@@ -195,24 +197,37 @@ public class TeacherActivity extends AppCompatActivity
                 int exam_weight = 0;
                 ArrayList<Double> results = new ArrayList<>();
                 double exam_result;
+                double temp;
                 double total_sig_per_std;
                 String[] r;
 
                 Set<String> k = hs.keySet();
                 k.remove("sig_target");
 
+                // Example
+                // "50: 40_ 50,4.6;50,4.8: 60_40,4.7;60,5"
+
                 for(String v: k) {
-                    String[] res = hs.get(v).split("-");
+                    String[] res = hs.get(v).split("@")[0].split("-");
                     total_sig_per_std = 0.0;
                     for(int i = 0; i < res.length; ++i) {
-                        exam_weight = Integer.parseInt(res[i].split(";")[0]);
+                        exam_weight = Integer.parseInt(res[i].split(":")[0]);
                         exam_result = 0.0;
-                        String[] rubric_vals = res[i].split(";");
+                        String[] rubric_vals = res[i].split(":");
+                        String[] rub_elements;
+                        String[] element;
                         for(int j = 1; j < rubric_vals.length; ++j) {
-                            r = rubric_vals[j].split(",");
-                            exam_result += Integer.parseInt(r[0])*Double.parseDouble(r[1]);
+                            temp = 0.0;
+                            rub_elements = rubric_vals[j].split("_");
+                            r = rub_elements[1].split(";");
+                            for(int h = 0; h < r.length; ++h) {
+                                element = r[h].split(",");
+                                temp += Integer.parseInt(element[0])*Double.parseDouble(element[1]);
+                            }
+                            temp = temp*Integer.parseInt(rub_elements[0]);
+                            exam_result += temp;
                         }
-                        exam_result = exam_weight*exam_result/(100*100);
+                        exam_result = exam_weight*exam_result/(100*100*100);
                         total_sig_per_std += exam_result;
                     }
                     results.add(total_sig_per_std);
@@ -269,15 +284,16 @@ public class TeacherActivity extends AppCompatActivity
 
         tail += max;
 
-        // Create signature
+        // Create min_signature
         database.getReference().child("signatures").child("pr"+tail).child("default_rubric").setValue("");
         database.getReference().child("signatures").child("pr"+tail).child("evaluations").setValue("");
         database.getReference().child("signatures").child("pr"+tail).child("id").setValue("pr"+tail);
         database.getReference().child("signatures").child("pr"+tail).child("name").setValue(signature_on_creation_name);
         database.getReference().child("signatures").child("pr"+tail).child("owner").setValue(user.getEmail());
         database.getReference().child("signatures").child("pr"+tail).child("users").setValue("");
+        database.getReference().child("signatures").child("pr"+tail).child("petitions").setValue("");
 
-        // Append signature to the teacher
+        // Append min_signature to the teacher
         database.getReference().child("teachers").child(username).child("courses").setValue(courses_id_stamps + "pr"+tail+";");
     }
 

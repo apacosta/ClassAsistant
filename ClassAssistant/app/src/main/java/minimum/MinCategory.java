@@ -11,8 +11,8 @@ public class MinCategory implements Serializable {
     private ArrayList<String> items_descriptions = new ArrayList<>();
     private ArrayList<Integer> items_weights = new ArrayList<>();
     private String id;
-    private  String name;
-    private int weight;
+    private  String name = "";
+    private int weight = 0;
 
     public void setName(String name) {
         this.name = name;

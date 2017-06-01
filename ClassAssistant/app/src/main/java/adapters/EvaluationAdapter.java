@@ -2,6 +2,7 @@ package adapters;
 
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,6 +69,7 @@ public class EvaluationAdapter extends RecyclerView.Adapter<EvaluationAdapter.My
             signature_name = (TextView) itemView.findViewById(R.id.eval_name_list);
             weight = (TextView) itemView.findViewById(R.id.weight_eval_list);
             this.delete_btn = (ImageView) itemView.findViewById(R.id.delete_eval);
+            signature_name.setOnClickListener(View2onClickListener);
             delete_btn.setOnClickListener(ViewOnClickListener);
             itemView.setOnClickListener(this);
         }
@@ -82,6 +84,13 @@ public class EvaluationAdapter extends RecyclerView.Adapter<EvaluationAdapter.My
             @Override
             public void onClick(View v) {
                 master.deleteEvaluation(getAdapterPosition());
+            }
+        };
+
+        private View.OnClickListener View2onClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                master.loadEvaluationActivity(getAdapterPosition());
             }
         };
     }

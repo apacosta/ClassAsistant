@@ -86,7 +86,7 @@ public class OldActivitySignatures extends AppCompatActivity implements Transact
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Create a new empty signature
+                // Create a new empty min_signature
 
                 startActivityForResult(add_asignature, Codes.REQ_ADD_SIGNATURE);
             }

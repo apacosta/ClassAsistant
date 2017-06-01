@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import adapters.EvaluationAdapter;
 import entities.Codes;
@@ -45,7 +46,9 @@ public class SignatureActivity extends AppCompatActivity
     private RecyclerView recycler_view;
 
     // Intents
-    private Intent evaluation_intent;
+    private Intent student_request_intent;
+    private Intent add_evaluation;
+    private Intent view_edit_evaluation;
 
     // Overall controller
     private Signature signature;
@@ -53,17 +56,14 @@ public class SignatureActivity extends AppCompatActivity
 
     // Navigation Drawer lists
     private Menu navdrawer_menu;
-    private long join_request_group_id;
-    private long current_std_group_id;
     private ArrayList<MinStudent> current_students_ids = new ArrayList<>();
     private ArrayList<MinStudent> join_request_ids = new ArrayList<>();
+    private HashMap<String, String> current_students_score = new HashMap<>();
 
     // Firebase variables
     private FirebaseDatabase database;
     private ArrayList<InformationTracker> trackers = new ArrayList<>();
     private ArrayList<InformationTracker> temp_trackers = new ArrayList<>();
-
-    private Intent add_evaluation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +79,7 @@ public class SignatureActivity extends AppCompatActivity
                 if(signature.getSumEvaluationWeights() < 100)
                     createNewEvalDialog();
                 else
-                    Toast.makeText(SignatureActivity.this, "This signature is FULL", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SignatureActivity.this, "This min_signature is FULL", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -137,13 +137,23 @@ public class SignatureActivity extends AppCompatActivity
         for(MinStudent s: signature.getStudents()) {
             database.getReference().child("eval-results").child(s.getID()).child(eval_id).removeValue();
         }
+        removeAllInformationTrackers();
+        drawUI();
+    }
 
-        buildFullSignatureInformation(parent_sig);
+    public void removeAllInformationTrackers() {
+        for(InformationTracker tr: this.trackers) {
+            tr.unSubscribeFromSource();
+            tr.removeListener(-1);
+        }
+
+        this.trackers = new ArrayList<>();
     }
 
     private void createIntents() {
-        this.evaluation_intent = new Intent(this, TeacherActivity.class);
         this.add_evaluation = new Intent(this, DialogNewEvaluation.class);
+        this.student_request_intent = new Intent(this, DialogJoinSignature.class);
+        this.view_edit_evaluation = new Intent(this, EvaluationActivity.class);
     }
 
     private void createNewEvalDialog() {
@@ -195,6 +205,16 @@ public class SignatureActivity extends AppCompatActivity
             }
         }
 
+        if(!sig.getStudents().equals("") && !sig.getEvaluations().equals("")) {
+            // Get all evaluations results per student
+            for (String s: sig.getStudents().split(";")) {
+                InformationTracker tracker =
+                        new InformationTracker(InformationTracker.STUDENTS_SCORE_TRACKER, database, sig.getID()+";"+s);
+                tracker.addListener(this);
+                trackers.add(tracker);
+            }
+        }
+
         if(!sig.getPetitions().equals("")) {
             // Get all petitions representation
             for (String s : sig.getPetitions().split(";")) {
@@ -215,7 +235,6 @@ public class SignatureActivity extends AppCompatActivity
     }
 
     private void attachInformationToSignature(StandardTransactionOutput out) {
-        Log.d("EvalTracker", "" + out.getContent().get("id"));
         if(out.getResultType() == InformationTracker.EVALUATION_TRACKER_DEEP) {
             MinEvaluation ev = new MinEvaluation();
             ev.setID(out.getContent().get("id"));
@@ -243,33 +262,143 @@ public class SignatureActivity extends AppCompatActivity
 
             this.signature.replacePetitionStudent(std);
         }
+        else if(out.getResultType() == InformationTracker.STUDENTS_SCORE_TRACKER) {
+            if(out.getContent().keySet().size() > 1) {
+                for(String k: out.getContent().keySet()) {
+                    if(!k.equals("sig_target")) {
+                        this.current_students_score.put(k, out.getContent().get(k));
+                    }
+                }
+            }
+        }
+
+        boolean check1 = signature.getEvaluations().size() == parent_sig.getEvaluations().split(";").length ||
+                         parent_sig.getEvaluations().split(";")[0].equals("");
+
+        boolean check2 = signature.getStudents().size() == parent_sig.getStudents().split(";").length ||
+                parent_sig.getStudents().split(";")[0].equals("");
+
+
+        boolean check3 = signature.getPetitions().size() == parent_sig.getPetitions().split(";").length ||
+                parent_sig.getPetitions().split(";")[0].equals("");
 
         // Check if trackers finished
-        if(this.signature.getEvaluations().size() == this.parent_sig.getEvaluations().split(";").length &&
-                this.signature.getStudents().size() == this.parent_sig.getStudents().split(";").length &&
-                this.signature.getPetitions().size() == this.parent_sig.getPetitions().split(";").length) {
+        if(check1 && check2 && check3) {
             drawUI();
             addSignatureStudents();
         }
     }
 
+    private double calculateScore(String id) {
+        String[] res = this.current_students_score.get(id).split("@")[0].split("-");
+        double total_sig_per_std = 0.0;
+        double exam_weight;
+        double exam_result;
+        double temp;
+
+        String[] r;
+        for(int i = 0; i < res.length; ++i) {
+            exam_weight = Integer.parseInt(res[i].split(":")[0]);
+            exam_result = 0.0;
+            String[] rubric_vals = res[i].split(":");
+            String[] rub_elements;
+            String[] element;
+
+            // "40   (50  4.6  50  4.8)       60_40,4.7;60,5"
+
+            for(int j = 1; j < rubric_vals.length; ++j) {
+                temp = 0.0;
+                rub_elements = rubric_vals[j].split("_");
+                r = rub_elements[1].split(";");
+                for(int h = 0; h < r.length; ++h) {
+                    element = r[h].split(",");
+                    temp += Integer.parseInt(element[0])*Double.parseDouble(element[1]);
+                }
+                temp = temp*Integer.parseInt(rub_elements[0]);
+                exam_result += temp;
+            }
+            exam_result = exam_weight*exam_result/(100*100*100);
+
+            total_sig_per_std += exam_result;
+        }
+        return Math.floor(total_sig_per_std * 100) / 100;
+    }
+
     private void addSignatureStudents() {
-        for(MinStudent s: this.signature.getStudents()) {
-            this.navdrawer_menu.getItem(1).getSubMenu().add(0, 2000 + this.current_students_ids.size(), 0, s.getName());
-            this.current_students_ids.add(s);
+        if(current_students_ids.size() != signature.getStudents().size()) {
+            Log.d("students", current_students_score.keySet().toString());
+            for (MinStudent s : this.signature.getStudents()) {
+                Log.d("students", s.getID());
+                if(!this.current_students_score.containsKey(s.getID()))
+                    this.navdrawer_menu.getItem(1).getSubMenu()
+                            .add(0, 2000 + this.current_students_ids.size(), 0, "(0.0)    " + s.getName());
+                else
+                    this.navdrawer_menu.getItem(1).getSubMenu().add(0, 2000 + this.current_students_ids.size(),
+                            0, "(" + calculateScore(s.getID()) + ")   " + s.getName());
+
+                this.current_students_ids.add(s);
+            }
         }
 
-        for(MinStudent s: this.signature.getPetitions()) {
-            this.navdrawer_menu.getItem(0).getSubMenu().add(0, 1000 + this.join_request_ids.size(), 0, s.getName());
-            this.join_request_ids.add(s);
+        if(join_request_ids.size() != signature.getPetitions().size()) {
+            for(MinStudent s: this.signature.getPetitions()) {
+                this.navdrawer_menu.getItem(0).getSubMenu().add(0, 1000 + this.join_request_ids.size(), 0, s.getName());
+                this.join_request_ids.add(s);
+            }
         }
     }
 
+    public void loadEvaluationActivity(int index) {
+        this.view_edit_evaluation.putExtra("evaluation", this.signature.getEvaluations().get(index));
+        this.view_edit_evaluation.putExtra("default_rubric", this.signature.getDefaultRubricId());
+        this.view_edit_evaluation.putExtra("min_signature", this.parent_sig);
+
+        this.startActivityForResult(this.view_edit_evaluation, Codes.EVALUATION_VIEW_REQUEST_CODE);
+    }
+
+
     private void drawUI() {
-        view_adapter = new EvaluationAdapter(this, signature.getEvaluations(), this.evaluation_intent);
+        Log.d("evaluations", parent_sig.getEvaluations());
+        view_adapter = new EvaluationAdapter(this, signature.getEvaluations(), this.view_edit_evaluation);
 
         recycler_view.setAdapter(view_adapter);
         recycler_view.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    private void joinStudentToSignature(int index) {
+        MinStudent ss = this.join_request_ids.get(index);
+
+        // Remove and add to respective lists
+        this.navdrawer_menu.getItem(0).getSubMenu().removeItem(1000 + index);
+        this.join_request_ids.remove(index);
+        this.navdrawer_menu.getItem(1).getSubMenu().add(0, 2000 + this.current_students_ids.size(), 0, ss.getName());
+        this.current_students_ids.add(ss);
+
+        // First add student to current students to avoid an unneeded database call
+        this.signature.replaceStudent(ss);
+
+        // Remove from signatures
+        int i;
+        for(i = 0; i < signature.getPetitions().size(); ++i) {
+            if(signature.getPetitions().get(i).getID().equals(ss.getID()))
+                break;
+        }
+        signature.getPetitions().remove(i);
+
+        String a = "";
+        for(String s: this.parent_sig.getPetitions().split(";")) {
+            if(!ss.getID().equals(s)) {
+                a += s + ";";
+            }
+        }
+
+        this.parent_sig.setPetitions(a);
+        this.parent_sig.setStudents(this.parent_sig.getStudents() + ss.getID() + ";");
+
+        // Update database
+        this.database.getReference().child("signatures").child(this.signature.getID()).child("petitions").setValue(a);
+        this.database.getReference().child("signatures")
+                .child(this.signature.getID()).child("users").setValue(this.parent_sig.getStudents());
     }
 
     @Override
@@ -305,6 +434,17 @@ public class SignatureActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
+        if(item.getItemId() - 1000 < 1000) {
+            // This is a class join request, so display the join dialog
+            id -= 1000;
+            this.student_request_intent.putExtra("index", id);
+            this.student_request_intent.putExtra("name", this.signature.getPetitions().get(id).getName());
+            this.startActivityForResult(this.student_request_intent, Codes.JOIN_SIGNATURE_REQUEST);
+        }
+        else {
+            // This is a current, so display the student activity
+        }
+
         Log.d("ItemSelected", "" + id);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -325,6 +465,9 @@ public class SignatureActivity extends AppCompatActivity
                 case InformationTracker.PETITIONS_TRACKER:
                     attachInformationToSignature(output);
                     break;
+                case InformationTracker.STUDENTS_SCORE_TRACKER:
+                    attachInformationToSignature(output);
+                    break;
             }
         }
     }
@@ -335,7 +478,15 @@ public class SignatureActivity extends AppCompatActivity
             if(resCod == Codes.RESULT_OK) {
                 String new_sig_name = data.getStringExtra("name");
                 Integer new_sig_weight = Integer.parseInt(data.getStringExtra("weight"));
-                createNewEvaluation(new_sig_name, new_sig_weight);
+                if(this.signature.getSumEvaluationWeights() + new_sig_weight <= 100)
+                    createNewEvaluation(new_sig_name, new_sig_weight);
+                else
+                    Toast.makeText(this, "Signature evaluation OVERFLOW", Toast.LENGTH_SHORT).show();
+            }
+        }
+        else if(reqCode == Codes.JOIN_SIGNATURE_REQUEST) {
+            if(resCod == Codes.RESULT_OK) {
+                joinStudentToSignature(data.getIntExtra("index", 0));
             }
         }
     }

@@ -134,8 +134,10 @@ public class RubricCreationActivity extends AppCompatActivity implements Transac
 
     private void appendCategoriesToRubric(HashMap<String, String> hs) {
         MinCategory mc = new MinCategory();
-        mc.setItemsWeights(Arrays.asList(hs.get("item_weight").split(";")));
-        mc.setItemsDescriptions(Arrays.asList(hs.get("items").split(";")));
+        if(!hs.get("items").split(";")[0].equals("")) {
+            mc.setItemsWeights(Arrays.asList(hs.get("item_weight").split(";")));
+            mc.setItemsDescriptions(Arrays.asList(hs.get("items").split(";")));
+        }
         mc.setName(hs.get("name"));
         mc.setWeight(Integer.parseInt(hs.get("weight")));
         mc.setId(hs.get("id"));
@@ -197,9 +199,6 @@ public class RubricCreationActivity extends AppCompatActivity implements Transac
     @Override
     public void manageTransactionResult(StandardTransactionOutput output) {
         if(!output.isNull()) {
-            for(String s: output.getContent().keySet()) {
-                Log.d("TransactionOutput", output.getContent().get(s));
-            }
             switch (output.getResultType()) {
                 case InformationTracker.RUBRIC_TRACKER_DEEP:
                     requestPerCategoryInformation(output.getContent());
@@ -223,7 +222,7 @@ public class RubricCreationActivity extends AppCompatActivity implements Transac
             this.rubric.setName(rubric_title_edit.getText().toString());
         }
 
-        if(!this.rubric.getName().equals("")) {
+        if(!this.rubric.getName().toString().equals("")) {
             // Update database
             // First update rubric's database
             String s = "";
@@ -255,6 +254,9 @@ public class RubricCreationActivity extends AppCompatActivity implements Transac
                 database.getReference()
                         .child("categories").child(c.getId()).child("weight").setValue(Integer.toString(c.getWeight()));
             }
+        }
+        else {
+            Toast.makeText(this, "Invalid Name IGNORING", Toast.LENGTH_SHORT).show();
         }
 
         super.onBackPressed();
