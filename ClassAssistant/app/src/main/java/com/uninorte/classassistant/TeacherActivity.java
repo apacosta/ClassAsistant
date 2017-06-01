@@ -380,6 +380,19 @@ public class TeacherActivity extends AppCompatActivity
                 this.trackers.add(tracker);
             }
         }
+        else if(reqCode == Codes.REQ_EVALUATION) {
+            if(resCod == Codes.RESULT_OK) {
+                String res_id = data.getStringExtra("id");
+                if(!res_id.isEmpty()) {
+                    for(MinSignature s: signatures_data) {
+                        if(s.getID().equals(res_id)) {
+                            requestGeneralScoreData(res_id, s.getStudents());
+                            break;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     @Override

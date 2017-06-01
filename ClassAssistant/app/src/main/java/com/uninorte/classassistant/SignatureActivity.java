@@ -325,19 +325,25 @@ public class SignatureActivity extends AppCompatActivity
     }
 
     private void addSignatureStudents() {
-        if(current_students_ids.size() != signature.getStudents().size()) {
-            Log.d("students", current_students_score.keySet().toString());
-            for (MinStudent s : this.signature.getStudents()) {
-                Log.d("students", s.getID());
-                if(!this.current_students_score.containsKey(s.getID()))
-                    this.navdrawer_menu.getItem(1).getSubMenu()
-                            .add(0, 2000 + this.current_students_ids.size(), 0, "(0.0)    " + s.getName());
-                else
-                    this.navdrawer_menu.getItem(1).getSubMenu().add(0, 2000 + this.current_students_ids.size(),
-                            0, "(" + calculateScore(s.getID()) + ")   " + s.getName());
-
-                this.current_students_ids.add(s);
+        Log.d("OnResult", "GOT HERE WITH ");
+        if(current_students_ids.size() == signature.getStudents().size()) {
+            for(int i = 0; i < current_students_ids.size(); ++i) {
+                this.navdrawer_menu.getItem(1).getSubMenu().removeItem(2000 + i);
             }
+            this.current_students_ids = new ArrayList<>();
+        }
+
+        Log.d("students", current_students_score.keySet().toString());
+        for (MinStudent s : this.signature.getStudents()) {
+            Log.d("students", s.getID());
+            if(!this.current_students_score.containsKey(s.getID()))
+                this.navdrawer_menu.getItem(1).getSubMenu()
+                        .add(0, 2000 + this.current_students_ids.size(), 0, "(0.0)    " + s.getName());
+            else
+                this.navdrawer_menu.getItem(1).getSubMenu().add(0, 2000 + this.current_students_ids.size(),
+                        0, "(" + calculateScore(s.getID()) + ")   " + s.getName());
+
+            this.current_students_ids.add(s);
         }
 
         if(join_request_ids.size() != signature.getPetitions().size()) {
@@ -407,6 +413,9 @@ public class SignatureActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
+            Intent i = new Intent();
+            i.putExtra("id", parent_sig.getID());
+            setResult(Codes.RESULT_OK, i);
             super.onBackPressed();
         }
     }
@@ -487,6 +496,11 @@ public class SignatureActivity extends AppCompatActivity
         else if(reqCode == Codes.JOIN_SIGNATURE_REQUEST) {
             if(resCod == Codes.RESULT_OK) {
                 joinStudentToSignature(data.getIntExtra("index", 0));
+            }
+        }
+        else if(reqCode == Codes.EVALUATION_VIEW_REQUEST_CODE) {
+            if(resCod == Codes.RESULT_OK) {
+                buildFullSignatureInformation(parent_sig);
             }
         }
     }

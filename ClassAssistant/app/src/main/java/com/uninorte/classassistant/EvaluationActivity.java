@@ -207,7 +207,7 @@ public class EvaluationActivity extends AppCompatActivity implements Transaction
         DatabaseReference ref = database.getReference();
 
         // Update rubric in signature
-        ref.child("evaluation").child(evaluation.getID()).child("rubric").setValue(this.rubrics_indices.get(which));
+        ref.child("evaluations").child(evaluation.getID()).child("rubric").setValue(this.rubrics_indices.get(which));
 
         // For each student that has the evaluation remove their results
         for(String k: current_students_score.keySet()) {
@@ -382,6 +382,12 @@ public class EvaluationActivity extends AppCompatActivity implements Transaction
                     break;
             }
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        this.setResult(Codes.RESULT_OK, new Intent());
+        super.onBackPressed();
     }
 
     @Override
