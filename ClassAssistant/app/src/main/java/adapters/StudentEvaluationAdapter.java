@@ -78,6 +78,7 @@ public class StudentEvaluationAdapter extends RecyclerView.Adapter<StudentEvalua
         private View.OnClickListener ViewOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                master.loadGradingDialog(getAdapterPosition());
             }
         };
 

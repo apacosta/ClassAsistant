@@ -18,15 +18,19 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Set;
 
 import adapters.StudentEvaluationAdapter;
+import entities.Codes;
 import entities.Signature;
 import entities.StandardTransactionOutput;
 import io.InformationTracker;
 import io.TransactionListeners;
+import minimum.MinCategory;
 import minimum.MinEvaluation;
+import minimum.MinRubric;
 import minimum.MinSignature;
 import minimum.MinStudent;
 
@@ -41,6 +45,9 @@ public class EvaluationActivity extends AppCompatActivity implements Transaction
     // Rubrics variable
     ArrayList<String> rubrics_names;
     ArrayList<String> rubrics_indices;
+    InformationTracker rubric_tracker;
+
+    MinRubric current_rubric;
 
     private HashMap<String, String> current_students_score = new HashMap<>();
 
@@ -80,6 +87,10 @@ public class EvaluationActivity extends AppCompatActivity implements Transaction
         this.evaluation = (MinEvaluation) getIntent().getSerializableExtra("evaluation");
         this.min_signature = (MinSignature) getIntent().getSerializableExtra("min_signature");
         this.default_rubric = min_signature.getDefaultRubric();
+        this.current_rubric = new MinRubric(this.default_rubric);
+
+        // Obtain current rubric information
+        requestRubricInfo();
 
         this.activity_name.setText(this.evaluation.getName());
 
@@ -91,6 +102,12 @@ public class EvaluationActivity extends AppCompatActivity implements Transaction
         loadStudentsFromSignature();
     }
 
+    private void requestRubricInfo() {
+        this.rubric_tracker = new InformationTracker(InformationTracker
+                .RUBRIC_TRACKER_DEEP, database, min_signature.getOwner().split("@")[0] + "/" + current_rubric.getId());
+        this.rubric_tracker.addListener(this);
+    }
+
     private void getAvaiableRubrics() {
         InformationTracker tracker = new InformationTracker(InformationTracker
                 .RUBRIC_TRACKER, database, signature.getOwner().split("@")[0]);
@@ -99,7 +116,7 @@ public class EvaluationActivity extends AppCompatActivity implements Transaction
     }
 
     private void createIntents() {
-        this.view_evaluate_student = new Intent(this, TeacherActivity.class);
+        this.view_evaluate_student = new Intent(this, EvaluateStudentActivity.class);
     }
 
     private void loadStudentsFromSignature() {
@@ -209,6 +226,76 @@ public class EvaluationActivity extends AppCompatActivity implements Transaction
             ref.child("eval-results").child(k).child(evaluations[i]).removeValue();
         }
 
+        // Request information on new rubric
+        this.rubric_tracker.unSubscribeFromSource();
+        this.rubric_tracker.removeListener(-1);
+        this.current_rubric = new MinRubric(this.rubrics_indices.get(which));
+        requestRubricInfo();
+    }
+
+    public void loadGradingDialog(int index) {
+        // Build the display array
+        // That is weights, values, and types
+
+        current_rubric.resetFields();
+
+        MinCategory c;
+        for(int j = 0; j < current_rubric.getCategories().size(); ++j) {
+            c = current_rubric.getCategories().get(j);
+            current_rubric.getLabelFields().add(1);
+            current_rubric.getLabelIDs().add(c.getId());
+            current_rubric.getWeightFields().add(0);
+            current_rubric.getScoreFields().add(0.0);
+
+            for(int i = 0; i < c.getItemsDescriptions().size(); ++i) {
+                current_rubric.getLabelFields().add(0);
+                current_rubric.getLabelIDs().add(c.getItemsDescriptions().get(i));
+                current_rubric.getWeightFields().add(c.getItemsWeights().get(i));
+                current_rubric.getScoreFields().add(guessScoreField(i, j, index));
+            }
+        }
+
+        Log.d("RubricFeed", "Labels: " + current_rubric.getLabelFields().toString());
+        Log.d("RubricFeed", "Ids: " + current_rubric.getLabelIDs().toString());
+        Log.d("RubricFeed", "Weights: " + current_rubric.getWeightFields().toString());
+        Log.d("RubricFeed", "Scores: " + current_rubric.getScoreFields().toString());
+
+        this.view_evaluate_student.putExtra("rubric", current_rubric);
+        this.view_evaluate_student.putExtra("student", this.signature.getStudents().get(index));
+
+        this.startActivityForResult(this.view_evaluate_student, Codes.GRADE_STUDENT_REQUEST);
+    }
+
+    private double guessScoreField(int elem_index, int cat_index, int std_index) {
+        String id = this.signature.getStudents().get(std_index).getID();
+        double result = 0.0;
+
+        if(!current_students_score.containsKey(id))
+            return result;
+
+        Log.d("Scores", current_students_score.get(id));
+        String[] evaluations = current_students_score.get(id).split("@")[1].split("-");
+
+        boolean check = false;
+        int i;
+        for(i = 0; i < evaluations.length; ++i) {
+            if(evaluations[i].equals(this.evaluation.getID())) {
+                check = true;
+                break;
+            }
+        }
+        if(check == false)
+            return result;
+
+        //"50:40_50,4.6;50,4.8:60_40,4.7;60,5"
+
+        String student_score = current_students_score.get(id).split("@")[0].split("-")[i];
+        String[] cats = student_score.split(":");
+        String cat_of_interest = cats[cat_index+1];
+        String[] elements = cat_of_interest.split("_")[1].split(";");
+
+        result = Double.parseDouble(elements[elem_index].split(",")[1]);
+        return result;
     }
 
     public double calculateStudentScore(String id) {
@@ -249,6 +336,31 @@ public class EvaluationActivity extends AppCompatActivity implements Transaction
         return Math.floor(result * 100) / 100;
     }
 
+    private void requestPerCategoryInformation(HashMap<String, String> hs) {
+        this.current_rubric.setName(hs.get("name"));
+
+        this.current_rubric.setCategories(new ArrayList<MinCategory>());
+
+        for(String s: hs.get("categories").split(";")) {
+            InformationTracker tracker = new InformationTracker(InformationTracker.CATEGORY_TRACKER_DEEP, database, s);
+            tracker.addListener(this);
+            trackers.add(tracker);
+        }
+    }
+
+    private void appendCategoriesToRubric(HashMap<String, String> hs) {
+        MinCategory mc = new MinCategory();
+        if(!hs.get("items").split(";")[0].equals("")) {
+            mc.setItemsWeights(Arrays.asList(hs.get("item_weight").split(";")));
+            mc.setItemsDescriptions(Arrays.asList(hs.get("items").split(";")));
+        }
+        mc.setName(hs.get("name"));
+        mc.setWeight(Integer.parseInt(hs.get("weight")));
+        mc.setId(hs.get("id"));
+
+        this.current_rubric.getCategories().add(mc);
+    }
+
     @Override
     public void manageTransactionResult(StandardTransactionOutput output) {
         if(!output.isNull()) {
@@ -262,6 +374,52 @@ public class EvaluationActivity extends AppCompatActivity implements Transaction
                 case InformationTracker.RUBRIC_TRACKER:
                     displayRubricsInformation(output.getContent());
                     break;
+                case InformationTracker.RUBRIC_TRACKER_DEEP:
+                    requestPerCategoryInformation(output.getContent());
+                    break;
+                case InformationTracker.CATEGORY_TRACKER_DEEP:
+                    appendCategoriesToRubric(output.getContent());
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int reqCode, int resCod, Intent data) {
+        if(reqCode == Codes.GRADE_STUDENT_REQUEST) {
+            if(resCod == Codes.RESULT_OK) {
+                // Modify grades
+                MinRubric d = (MinRubric) data.getSerializableExtra("rubric");
+                MinStudent s = (MinStudent) data.getSerializableExtra("student");
+
+                String out = "";
+                out += this.evaluation.getWeight() + ":";
+
+                int relative_jump = 0;
+                for(MinCategory c: d.getCategories()) {
+                    out += c.getWeight() + "_";
+                    for(int i = 0; i < d.getLabelFields().size(); ++i) {
+                        if(relative_jump != 0) {
+                            i = relative_jump+1;
+                            relative_jump = 0;
+                        }
+                        if(d.getLabelFields().get(i) == 0) {
+                            out += d.getWeightFields().get(i) + "," + d.getScoreFields().get(i) + ";";
+                        }
+                        else if(i != 0) {
+                            out = out.substring(0, out.length()-1);
+                            out += ":";
+                            relative_jump = i;
+                            break;
+                        }
+                    }
+                }
+                out = out.substring(0, out.length()-1);
+                Log.d("Output", out);
+
+                // Send to database
+                DatabaseReference ref = database.getReference();
+                ref.child("eval-results").child(s.getID()).child(this.evaluation.getID()).setValue(out);
             }
         }
     }

@@ -18,6 +18,7 @@ public class Codes {
     public static final int EVALUATION_CREATE_REQUEST = 3;
     public static final int JOIN_SIGNATURE_REQUEST = 4;
     public static final int EVALUATION_VIEW_REQUEST_CODE = 5;
+    public static final int GRADE_STUDENT_REQUEST = 6;
 
     // Result codes
     public static final int RESULT_OK = 1;

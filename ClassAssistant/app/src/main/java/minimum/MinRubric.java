@@ -12,6 +12,10 @@ public class MinRubric implements Serializable {
     private final String id;
     private int sum_weights = 0;
     private String name = "";
+    private ArrayList<Integer> label_fields = new ArrayList<>();
+    private ArrayList<Integer> weight_fields = new ArrayList<>();
+    private ArrayList<Double> score_fields = new ArrayList<>();
+    private ArrayList<String> label_ids = new ArrayList<>();
 
     public MinRubric(String id) {
         this.id = id;
@@ -24,6 +28,13 @@ public class MinRubric implements Serializable {
         }
         this.sum_weights = sum;
         return this.sum_weights;
+    }
+
+    public void resetFields() {
+        this.label_fields = new ArrayList<>();
+        this.label_ids = new ArrayList<>();
+        this.weight_fields = new ArrayList<>();
+        this.score_fields = new ArrayList<>();
     }
 
     public void setSumWeights(int sum_weights) {
@@ -40,6 +51,22 @@ public class MinRubric implements Serializable {
 
     public String getId() {
         return this.id;
+    }
+
+    public ArrayList<Integer> getLabelFields() {
+        return this.label_fields;
+    }
+
+    public ArrayList<Double> getScoreFields() {
+        return this.score_fields;
+    }
+
+    public ArrayList<Integer> getWeightFields() {
+        return this.weight_fields;
+    }
+
+    public ArrayList<String> getLabelIDs() {
+        return this.label_ids;
     }
 
     public ArrayList<MinCategory> getCategories() {

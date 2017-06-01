@@ -26,7 +26,7 @@
             android:theme="@style/AppTheme.Dark" />
         <activity
             android:name=".TeacherActivity"
-            android:label="@string/title_activity_teacher_view"
+            android:label="Teacher APP"
             android:theme="@style/AppTheme.Darker">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -54,7 +54,9 @@
         <activity
             android:name=".EvaluationActivity"
             android:label="@string/title_activity_evaluation"
-            android:theme="@style/AppTheme.Darker"></activity>
+            android:theme="@style/AppTheme.Darker" />
+        <activity android:name=".EvaluateStudentActivity"
+            android:theme="@style/AppTheme.Light.Dialog"></activity>
     </application>
 
 </manifest>
