@@ -346,12 +346,29 @@ public class SignatureActivity extends AppCompatActivity
             this.current_students_ids.add(s);
         }
 
-        if(join_request_ids.size() != signature.getPetitions().size()) {
-            for(MinStudent s: this.signature.getPetitions()) {
+        if(join_request_ids.size() == signature.getStudents().size()) {
+            for(int i = 0; i < join_request_ids.size(); ++i) {
+                this.navdrawer_menu.getItem(0).getSubMenu().removeItem(1000 + i);
+            }
+            this.current_students_ids = new ArrayList<>();
+        }
+
+        boolean ck;
+        for(MinStudent s: this.signature.getPetitions()) {
+            Log.d("OnResult", "joins sizes: " + this.join_request_ids.size());
+            ck = false;
+            for(MinStudent ss: this.signature.getStudents()) {
+                if(ss.getID().equals(s.getID())) {
+                    ck = true;
+                    break;
+                }
+            }
+            if(ck == false) {
                 this.navdrawer_menu.getItem(0).getSubMenu().add(0, 1000 + this.join_request_ids.size(), 0, s.getName());
                 this.join_request_ids.add(s);
             }
         }
+
     }
 
     public void loadEvaluationActivity(int index) {
@@ -377,6 +394,8 @@ public class SignatureActivity extends AppCompatActivity
         // Remove and add to respective lists
         this.navdrawer_menu.getItem(0).getSubMenu().removeItem(1000 + index);
         this.join_request_ids.remove(index);
+
+        Log.d("OnResult", "joins after remove: " + this.join_request_ids.toString());
         this.navdrawer_menu.getItem(1).getSubMenu().add(0, 2000 + this.current_students_ids.size(), 0, ss.getName());
         this.current_students_ids.add(ss);
 
@@ -405,6 +424,8 @@ public class SignatureActivity extends AppCompatActivity
         this.database.getReference().child("signatures").child(this.signature.getID()).child("petitions").setValue(a);
         this.database.getReference().child("signatures")
                 .child(this.signature.getID()).child("users").setValue(this.parent_sig.getStudents());
+        this.database.getReference().child("students")
+                .child(ss.getID()).child("courses").setValue(ss.getSignatures()+this.signature.getID()+";");
     }
 
     @Override

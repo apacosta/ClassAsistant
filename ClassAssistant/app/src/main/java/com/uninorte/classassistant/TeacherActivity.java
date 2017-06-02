@@ -354,6 +354,19 @@ public class TeacherActivity extends AppCompatActivity
                         ms.setNumStudents(0);
                     else
                         ms.setNumStudents(output.getContent().get("users").split(";").length);
+
+                    // Replace current signature
+                    boolean check = false;
+                    int i;
+                    for(i = 0; i < this.signatures_data.size(); ++i) {
+                        if(this.signatures_data.get(i).getID().equals(ms.getID())) {
+                            check = true;
+                            break;
+                        }
+                    }
+                    if(check) {
+                        this.signatures_data.remove(i);
+                    }
                     this.signatures_data.add(ms);
 
                     requestGeneralScoreData(output.getContent().get("id"), output.getContent().get("users"));
@@ -386,7 +399,7 @@ public class TeacherActivity extends AppCompatActivity
                 if(!res_id.isEmpty()) {
                     for(MinSignature s: signatures_data) {
                         if(s.getID().equals(res_id)) {
-                            requestGeneralScoreData(res_id, s.getStudents());
+                            requestSignaturesInfo(this.courses_id_stamps.split(";"));
                             break;
                         }
                     }

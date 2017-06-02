@@ -145,6 +145,8 @@ public class InformationTracker {
                                     acum += e.getValue() + "-";
                                 }
                             }
+                            if(acum.length() == 0)
+                                return StandardTransactionOutput.nullTransactionOutput();
                             acum = acum.substring(0, acum.length()-1);
                             acum += "@";
                             for(DataSnapshot e: d.getChildren()) {

@@ -86,8 +86,14 @@ public class EvaluationActivity extends AppCompatActivity implements Transaction
 
         this.evaluation = (MinEvaluation) getIntent().getSerializableExtra("evaluation");
         this.min_signature = (MinSignature) getIntent().getSerializableExtra("min_signature");
-        this.default_rubric = min_signature.getDefaultRubric();
-        this.current_rubric = new MinRubric(this.default_rubric);
+
+        String rubric = evaluation.getRubric().getId();
+        if(rubric.isEmpty()) {
+            rubric = min_signature.getDefaultRubric();
+        }
+
+        this.default_rubric = rubric;
+        this.current_rubric = new MinRubric(rubric);
 
         // Obtain current rubric information
         requestRubricInfo();
@@ -290,6 +296,8 @@ public class EvaluationActivity extends AppCompatActivity implements Transaction
         //"50:40_50,4.6;50,4.8:60_40,4.7;60,5"
 
         String student_score = current_students_score.get(id).split("@")[0].split("-")[i];
+
+        Log.d("Scores", student_score);
         String[] cats = student_score.split(":");
         String cat_of_interest = cats[cat_index+1];
         String[] elements = cat_of_interest.split("_")[1].split(";");
