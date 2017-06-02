@@ -1,0 +1,107 @@
+{
+  "project_info": {
+    "project_number": "7104024500",
+    "firebase_url": "https://sellertracker-1494270935467.firebaseio.com",
+    "project_id": "sellertracker-1494270935467",
+    "storage_bucket": "sellertracker-1494270935467.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:7104024500:android:351cd5508175ba56",
+        "android_client_info": {
+          "package_name": "com.uninorte.sellertracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "7104024500-31kpfsq2qp7n0n3oq31eag6pekqdniaa.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.uninorte.sellertracker",
+            "certificate_hash": "5ffb2f871d42c7d879add17f0a24e07d9630bca8"
+          }
+        },
+        {
+          "client_id": "7104024500-at1n5kcsjbbfep0i978ehthjlfj76h4q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.uninorte.sellertracker",
+            "certificate_hash": "74c7d60212de0101e54b4b0236910bc8bc299622"
+          }
+        },
+        {
+          "client_id": "7104024500-hoi676en0jc8e07p2igd2i4jbpmab6u8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-rl8nQ95knsC2ID3WarlSc2yiaaBuywU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "7104024500-hoi676en0jc8e07p2igd2i4jbpmab6u8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:7104024500:android:1e902549d06dadfe",
+        "android_client_info": {
+          "package_name": "com.uninorte.classassistant"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "7104024500-dpahu0cn96j61stjqbsg06ujr2800sll.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.uninorte.classassistant",
+            "certificate_hash": "74c7d60212de0101e54b4b0236910bc8bc299622"
+          }
+        },
+        {
+          "client_id": "7104024500-hoi676en0jc8e07p2igd2i4jbpmab6u8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-rl8nQ95knsC2ID3WarlSc2yiaaBuywU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "7104024500-hoi676en0jc8e07p2igd2i4jbpmab6u8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

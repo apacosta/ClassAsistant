@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.uninorte.classassistant">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".OldActivitySignatures"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".DialogAddSignature"
+            android:theme="@style/AppTheme.Dark.Dialog" />
+        <activity
+            android:name=".ActivityAddReport"
+            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
+        <activity
+            android:name=".ActivityRubric"
+            android:label="@string/title_activity_rubric" />
+        <activity
+            android:name=".LoginActivity"
+            android:theme="@style/AppTheme.Dark" />
+        <activity
+            android:name=".TeacherActivity"
+            android:label="Student APP"
+            android:theme="@style/AppTheme.Darker">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".RubricCreationActivity"
+            android:label="@string/title_activity_rubric_creation"
+            android:theme="@style/AppTheme.Darker" />
+        <activity
+            android:name=".DialogCategory"
+            android:theme="@style/AppTheme.Light.Dialog" />
+        <activity
+            android:name=".SignatureActivity"
+            android:label="@string/title_activity_signature"
+            android:theme="@style/AppTheme.Darker" />
+        <activity
+            android:name=".DialogNewEvaluation"
+            android:theme="@style/AppTheme.Dark.Dialog" />
+        <activity
+            android:name=".DialogJoinSignature"
+            android:theme="@style/AppTheme.Dark.Dialog" />
+        <activity
+            android:name=".EvaluationActivity"
+            android:label="@string/title_activity_evaluation"
+            android:theme="@style/AppTheme.Darker" />
+        <activity android:name=".EvaluateStudentActivity"
+            android:theme="@style/AppTheme.Light.Dialog"></activity>
+    </application>
+
+</manifest>

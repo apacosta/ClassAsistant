@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="Join Requests"
+        android:id="@+id/join_request_item"
+        android:icon="@drawable/join_request">
+        <menu>
+
+        </menu>
+    </item>
+    <item android:title="Current Students"
+        android:id="@+id/students_list_sig_drawer"
+        android:icon="@drawable/students_w">
+        <menu>
+
+        </menu>
+    </item>
+</menu>
